@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdx.game.helpers.AssetManager;
+import com.mygdx.game.screens.LoginScreen;
 import com.mygdx.game.screens.MainMenuScreen;
 import com.mygdx.game.utils.AppPreferences;
 
@@ -15,7 +16,7 @@ public class Videojoc  extends Game {
 	public void create() {
 		preferences = new AppPreferences();
 		AssetManager.load();
-		setScreen(new MainMenuScreen(this));
+		setScreen(new LoginScreen(this));
 	}
 
 
