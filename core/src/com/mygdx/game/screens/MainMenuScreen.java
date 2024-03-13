@@ -58,6 +58,12 @@ public class MainMenuScreen implements Screen {
         window.add(optionsButton).width(450).padBottom(20).row();
         window.add(loginButton).width(450).padBottom(20).row();
 
+        startGameButton.addListener(new ChangeListener() {
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                game.setScreen(new GameScreen());
+            }
+        });
+
         optionsButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {

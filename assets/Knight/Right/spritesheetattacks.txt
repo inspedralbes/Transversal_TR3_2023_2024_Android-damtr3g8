@@ -1,0 +1,47 @@
+spritesheetattacks-default.png
+size: 130, 20
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+CharAni-Sheet4-126
+  rotate: false
+  xy: 0, 0
+  size: 26, 16
+  orig: 32, 32
+  offset: 0, 7
+  index: -1
+CharAni-Sheet4-127
+  rotate: false
+  xy: 26, 0
+  size: 22, 19
+  orig: 32, 32
+  offset: 10, 7
+  index: -1
+CharAni-Sheet4-128
+  rotate: false
+  xy: 48, 0
+  size: 21, 20
+  orig: 32, 32
+  offset: 8, 7
+  index: -1
+CharAni-Sheet4-129
+  rotate: false
+  xy: 69, 0
+  size: 21, 17
+  orig: 32, 32
+  offset: 9, 7
+  index: -1
+CharAni-Sheet4-130
+  rotate: false
+  xy: 90, 0
+  size: 22, 17
+  orig: 32, 32
+  offset: 10, 7
+  index: -1
+CharAni-Sheet4-131
+  rotate: false
+  xy: 112, 0
+  size: 18, 17
+  orig: 32, 32
+  offset: 10, 7
+  index: -1
