@@ -66,8 +66,7 @@ public class MainMenuScreen implements Screen {
             }
         });
         options = new Table();
-        options.setSize(640, 480);
-        options.setPosition((Settings.GAME_WIDTH / 2) - (options.getWidth() / 2), (Settings.GAME_HEIGHT / 2) - (options.getHeight() / 2));
+        options.setFillParent(true);
         options.setVisible(false);
 
         titleLabel = new Label("Opciones", skin);
