@@ -3,6 +3,7 @@ package com.mygdx.game.helpers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 public class AssetManager {
@@ -10,12 +11,15 @@ public class AssetManager {
     public static Texture sheetidleright,sheetrunright,sheetattackright;
     public static Texture sheetrunfront;
     public static Texture sheetrunback;
+    public static TextureAtlas flyfirebatAtlas; // Atlas que contiene las imágenes del murciélago
+    public static TextureRegion[] firebatFlyingFrames;
     public static TextureRegion[] idleright,runright,attackright;
     public static TextureRegion[] runfront;
     public static TextureRegion[] runback;
     public static Animation<TextureRegion> idlerightanimation,runrightanimation,attackrightanimation;
     public static Animation<TextureRegion> runfrontanimation;
     public static Animation<TextureRegion> runbackanimation;
+    public static Animation<TextureRegion> firebatFlyinganimation;
     public static Skin skin;
     public static void load(){
         fondo = new Texture(Gdx.files.internal("Fondo/fondo.png"));
@@ -27,6 +31,8 @@ public class AssetManager {
         sheetrunfront = new Texture(Gdx.files.internal("Knight/Front/runfront.png"));
 
         sheetrunback = new Texture(Gdx.files.internal("Knight/Back/runback.png"));
+
+        flyfirebatAtlas = new TextureAtlas(Gdx.files.internal("Bat/Fire/Fly/fireflybat.txt"));
 
         TextureRegion[][] tmpIdle = TextureRegion.split(sheetidleright, 16, 17);
         idleright = new TextureRegion[4];
@@ -78,6 +84,12 @@ public class AssetManager {
         runback[6] = new TextureRegion(sheetrunback, 102, 0, 18, 16);
         runback[7] = new TextureRegion(sheetrunback, 120, 0, 18, 17);
         runbackanimation = new Animation<>(0.08f, runback);
+
+        firebatFlyingFrames = new TextureRegion[4];
+        for (int i = 0; i < 4; i++) {
+            firebatFlyingFrames[i] = flyfirebatAtlas.findRegion("BatFire_Flying-" + i);
+        }
+        firebatFlyinganimation = new Animation<>(0.08f,firebatFlyingFrames);
 
         skin = new Skin(Gdx.files.internal("Skin/pixthulhu-ui.json"));
     }
