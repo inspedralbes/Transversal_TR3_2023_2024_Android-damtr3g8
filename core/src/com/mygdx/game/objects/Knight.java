@@ -12,27 +12,32 @@ import com.mygdx.game.utils.Settings;
 public class Knight extends Actor {
     private Vector2 position;
     private int width, height;
-    public boolean isRunning,isAttacking;
+    public boolean isRunningRight,isRunningFront,isRunningBack,isAttacking,isFacingRight;
     private boolean isAnimating = false;
     private Rectangle knight;
-    public Animation<TextureRegion> idleAnimation, runRightAnimation,attackRightAnimation;
+    public Animation<TextureRegion> idleAnimation, runRightAnimation,attackRightAnimation,runFrontAnimation,runBackAnimation;
     public float stateTime;
 
     public Knight(float x, float y, int width, int height) {
         this.width = width;
         this.height = height;
         position = new Vector2(x, y);
+        isFacingRight = true;
 
         knight = new Rectangle();
-        // Cargar animación de idle
+
         idleAnimation = AssetManager.idlerightanimation;
         runRightAnimation = AssetManager.runrightanimation;
         attackRightAnimation = AssetManager.attackrightanimation;
+        runFrontAnimation = AssetManager.runfrontanimation;
+        runBackAnimation = AssetManager.runbackanimation;
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
+        float drawX = isFacingRight ? position.x : position.x + width;
+        float drawWidth = isFacingRight ? width : -width;
         TextureRegion currentFrame;
         if (isAttacking) {
             currentFrame = attackRightAnimation.getKeyFrame(stateTime, false);
@@ -40,13 +45,17 @@ public class Knight extends Actor {
                 isAttacking = false;
             }
         }
-        else if (isRunning) {
+        else if (isRunningRight) {
             currentFrame = runRightAnimation.getKeyFrame(stateTime, true);
+        } else if (isRunningFront) {
+            currentFrame = runFrontAnimation.getKeyFrame(stateTime,true);
+        } else if (isRunningBack) {
+            currentFrame = runBackAnimation.getKeyFrame(stateTime,true);
         } else {
             currentFrame = idleAnimation.getKeyFrame(stateTime, true);
         }
 
-        batch.draw(currentFrame, getX(), getY(), getWidth(), getHeight());
+        batch.draw(currentFrame, drawX, getY(), drawWidth, getHeight());
     }
 
     @Override
@@ -62,8 +71,8 @@ public class Knight extends Actor {
         if (newX > 0) {
             position.x = newX;
         }
-        //isFacingRight = false;
-        isRunning = true;
+        isFacingRight = false;
+        isRunningRight = true;
         //}
     }
 
@@ -73,8 +82,8 @@ public class Knight extends Actor {
         if (newX + width < Settings.GAME_WIDTH) {
             position.x = newX;
         }
-        //isFacingRight = true;
-        isRunning = true;
+        isFacingRight = true;
+        isRunningRight = true;
         //}
     }
 
@@ -83,7 +92,7 @@ public class Knight extends Actor {
         if (newY + height < Settings.GAME_HEIGHT) {
             position.y = newY;
         }
-        isRunning = true;
+        isRunningBack = true;
     }
 
     public void moverAbajo(float delta) {
@@ -91,7 +100,7 @@ public class Knight extends Actor {
         if (newY > 0) {
             position.y = newY;
         }
-        isRunning = true;
+        isRunningFront = true;
     }
     public void moverArribaIzquierda(float delta) {
         moverArriba(delta);
@@ -139,7 +148,9 @@ public class Knight extends Actor {
     }
 
     public void pararMovimiento() {
-        isRunning = false;
+        isRunningFront = false;
+        isRunningRight = false;
+        isRunningBack = false;
     }
     public float getX() {
         return position.x;

@@ -1,4 +1,4 @@
-spritesheetattacks-default.png
+attackright.png
 size: 130, 20
 format: RGBA8888
 filter: Linear,Linear

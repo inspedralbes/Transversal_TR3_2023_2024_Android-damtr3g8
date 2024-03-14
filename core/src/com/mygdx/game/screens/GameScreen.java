@@ -8,9 +8,13 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.mygdx.game.helpers.AssetManager;
+import com.mygdx.game.objects.Background;
 import com.mygdx.game.objects.Knight;
 import com.mygdx.game.utils.AppPreferences;
 import com.mygdx.game.utils.Settings;
@@ -23,6 +27,7 @@ public class GameScreen implements Screen {
     private ShapeRenderer shapeRenderer;
     private GlyphLayout textLayout;
     private Knight knight;
+    private Background background;
     AppPreferences preferences = new AppPreferences();
     boolean musicEnabled = preferences.isMusicEnabled();
     float musicVolume = preferences.getMusicVolume();
@@ -39,10 +44,12 @@ public class GameScreen implements Screen {
         stage = new Stage(viewport);
         batch = stage.getBatch();
 
+
+        background = new Background(AssetManager.fondo);
         //scrollHandler = new ScrollHandler();
         knight = new Knight(Settings.KNIGHT_STARTX,Settings.KNIGHT_STARTY,Settings.KNIGHT_WIDTH,Settings.KNIGHT_HEIGHT);
 
-
+        stage.addActor(background);
         stage.addActor(knight);
 
         knight.setName("Knight");
@@ -59,10 +66,11 @@ public class GameScreen implements Screen {
         shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
 
-        shapeRenderer.setColor(new Color(0, 1, 0, 1));
+        shapeRenderer.setColor(new Color(0, 0, 1, 1));
 
 
         shapeRenderer.rect(knight.getX(), knight.getY(), knight.getWidth(), knight.getHeight());
+        shapeRenderer.rect(background.getX(),background.getY(),background.getWidth(),background.getHeight());
 
         shapeRenderer.end();
     }
@@ -136,6 +144,6 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        stage.dispose();
     }
 }

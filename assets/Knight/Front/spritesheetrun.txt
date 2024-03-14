@@ -1,0 +1,61 @@
+spritesheetrun-default.png
+size: 134, 17
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+CharAni-Sheet4-28
+  rotate: false
+  xy: 0, 0
+  size: 17, 17
+  orig: 32, 32
+  offset: 7, 7
+  index: -1
+CharAni-Sheet4-29
+  rotate: false
+  xy: 17, 0
+  size: 17, 16
+  orig: 32, 32
+  offset: 7, 7
+  index: -1
+CharAni-Sheet4-30
+  rotate: false
+  xy: 34, 0
+  size: 17, 16
+  orig: 32, 32
+  offset: 7, 7
+  index: -1
+CharAni-Sheet4-31
+  rotate: false
+  xy: 51, 0
+  size: 17, 17
+  orig: 32, 32
+  offset: 7, 7
+  index: -1
+CharAni-Sheet4-32
+  rotate: false
+  xy: 68, 0
+  size: 17, 17
+  orig: 32, 32
+  offset: 7, 7
+  index: -1
+CharAni-Sheet4-33
+  rotate: false
+  xy: 85, 0
+  size: 17, 16
+  orig: 32, 32
+  offset: 7, 7
+  index: -1
+CharAni-Sheet4-34
+  rotate: false
+  xy: 102, 0
+  size: 16, 16
+  orig: 32, 32
+  offset: 7, 7
+  index: -1
+CharAni-Sheet4-35
+  rotate: false
+  xy: 118, 0
+  size: 16, 16
+  orig: 32, 32
+  offset: 7, 7
+  index: -1
