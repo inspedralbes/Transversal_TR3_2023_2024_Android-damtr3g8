@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.game.helpers.AssetManager;
 import com.mygdx.game.objects.Background;
@@ -24,7 +25,6 @@ import com.mygdx.game.utils.Settings;
 
 public class GameScreen implements Screen {
     private Stage stage;
-    //private ScrollHandler scrollHandler;
     private Batch batch;
     OrthographicCamera camera;
     private ShapeRenderer shapeRenderer;
@@ -52,15 +52,13 @@ public class GameScreen implements Screen {
 
 
         background = new Background(AssetManager.fondo);
-        //scrollHandler = new ScrollHandler();
         knight = new Knight(Settings.KNIGHT_STARTX,Settings.KNIGHT_STARTY,Settings.KNIGHT_WIDTH,Settings.KNIGHT_HEIGHT);
-        //fireBat = new FireBat(AssetManager.firebatFlyinganimation);
-        firebatSpawner = new FireBatSpawner();
-        spawnTimer = 0f;
 
         stage.addActor(background);
         stage.addActor(knight);
-        //stage.addActor(fireBat);
+        firebatSpawner = new FireBatSpawner(knight);
+        spawnTimer = 0f;
+        spawnFirebat();
 
         knight.setName("Knight");
 
@@ -81,7 +79,9 @@ public class GameScreen implements Screen {
 
         shapeRenderer.rect(knight.getX(), knight.getY(), knight.getWidth(), knight.getHeight());
         shapeRenderer.rect(background.getX(),background.getY(),background.getWidth(),background.getHeight());
-        //shapeRenderer.rect(fireBat.getX(), fireBat.getY(), fireBat.getWidth(), fireBat.getHeight());
+        for (FireBat firebat : firebatSpawner.getFirebats()) {
+            firebat.drawBounds(shapeRenderer);
+        }
 
         shapeRenderer.end();
     }
@@ -96,7 +96,7 @@ public class GameScreen implements Screen {
 
         firebatSpawner.update(delta);
         spawnTimer += delta;
-        if (spawnTimer >= 2f) { // Ajusta el tiempo entre cada aparición
+        if (spawnTimer >= Settings.FIREBAR_SPAWNER) { // Ajusta el tiempo entre cada aparición
             spawnFirebat();
             spawnTimer = 0f;
         }
@@ -107,13 +107,20 @@ public class GameScreen implements Screen {
     private void spawnFirebat() {
         // Calcula la posición inicial y final del murciélago
         float startX, startY, endX, endY;
-        startX = MathUtils.randomBoolean() ? -50 : Settings.GAME_WIDTH + 50; // Aparece en el lado izquierdo o derecho
+        startX = MathUtils.randomBoolean() ? -50 : Settings.GAME_WIDTH+50; // Aparece en el lado izquierdo o derecho
         startY = MathUtils.random(0, Settings.GAME_HEIGHT);
         endX = Settings.GAME_WIDTH - startX; // Opuesto al inicio
         endY = MathUtils.random(0, Settings.GAME_HEIGHT);
 
+        Array<FireBat> fireBats = firebatSpawner.getFirebats();
+
         // Crea y añade el murciélago al spawner
-        firebatSpawner.spawnFirebat(startX, startY, endX, endY, AssetManager.firebatFlyinganimation);
+        firebatSpawner.spawnFirebat(startX, startY);
+        for (FireBat firebat: fireBats) {
+            stage.addActor(firebat);
+        }
+
+        Gdx.app.log("Spawn", "Nuevo murciélago creado en: " + startX + ", " + startY);
     }
     private void handleInput(float delta) {
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {

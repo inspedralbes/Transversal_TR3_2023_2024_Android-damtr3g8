@@ -1,32 +1,46 @@
-fireflybat.png
-size: 128, 32
+firebatattack.png
+size: 192, 32
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-BatFire_Flying-0
+BatFire_Attack-0
   rotate: false
   xy: 0, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-BatFire_Flying-1
+BatFire_Attack-1
   rotate: false
   xy: 32, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-BatFire_Flying-2
+BatFire_Attack-2
   rotate: false
   xy: 64, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-BatFire_Flying-3
+BatFire_Attack-3
   rotate: false
   xy: 96, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+BatFire_Attack-4
+  rotate: false
+  xy: 128, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+BatFire_Attack-5
+  rotate: false
+  xy: 160, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
