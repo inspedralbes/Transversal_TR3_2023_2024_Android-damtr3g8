@@ -89,13 +89,16 @@ public class GameScreen implements Screen {
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
 
-        firebatSpawner.update(delta);
-        spawnTimer += delta;
-        if (spawnTimer >= Settings.FIREBAT_SPAWNER) {
-            spawnFirebat();
-            spawnTimer = 0f;
-        }
 
+        firebatSpawner.update(delta);
+
+        if (!knight.isDeath){
+            spawnTimer += delta;
+            if (spawnTimer >= Settings.FIREBAT_SPAWNER) {
+                spawnFirebat();
+                spawnTimer = 0f;
+            }
+        }
         drawElements();
         handleInput(delta);
     }
