@@ -6,17 +6,19 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.mygdx.game.helpers.AssetManager;
 import com.mygdx.game.utils.Settings;
 
 public class Knight extends Actor {
     private Vector2 position;
     private int width, height;
-    public boolean isRunningRight,isRunningFront,isRunningBack,isAttacking,isFacingRight;
+    public boolean isRunningRight, isRunningFront, isRunningBack, isAttacking, isFacingRight, isHurting, isDeath;
     private boolean isAnimating = false;
     private Rectangle knight;
-    public Animation<TextureRegion> idleAnimation, runRightAnimation,attackRightAnimation,runFrontAnimation,runBackAnimation;
+    public Animation<TextureRegion> idleAnimation, runRightAnimation, attackRightAnimation, hurtrightAnimation, runFrontAnimation, runBackAnimation, deathAnimation;
     public float stateTime;
+    public int health = Settings.KNIGHT_HEALTH;
 
     public Knight(float x, float y, int width, int height) {
         this.width = width;
@@ -27,6 +29,8 @@ public class Knight extends Actor {
         idleAnimation = AssetManager.idlerightanimation;
         runRightAnimation = AssetManager.runrightanimation;
         attackRightAnimation = AssetManager.attackrightanimation;
+        hurtrightAnimation = AssetManager.hurtrightanimation;
+        deathAnimation = AssetManager.deathanimation;
         runFrontAnimation = AssetManager.runfrontanimation;
         runBackAnimation = AssetManager.runbackanimation;
     }
@@ -37,21 +41,34 @@ public class Knight extends Actor {
         float drawX = isFacingRight ? position.x : position.x + width;
         float drawWidth = isFacingRight ? width : -width;
         TextureRegion currentFrame;
-        if (isAttacking) {
-            currentFrame = attackRightAnimation.getKeyFrame(stateTime, false);
-            if (attackRightAnimation.isAnimationFinished(stateTime)) {
-                isAttacking = false;
+
+        if (isDeath) {
+            currentFrame = deathAnimation.getKeyFrame(stateTime, false);
+            if (deathAnimation.isAnimationFinished(stateTime)) {
+                remove();
+            }
+        } else {
+            if (isAttacking) {
+                currentFrame = attackRightAnimation.getKeyFrame(stateTime, false);
+                if (attackRightAnimation.isAnimationFinished(stateTime)) {
+                    isAttacking = false;
+                }
+            } else if (isHurting) {
+                currentFrame = hurtrightAnimation.getKeyFrame(stateTime, false);
+                if (hurtrightAnimation.isAnimationFinished(stateTime)) {
+                    isHurting = false;
+                }
+            } else if (isRunningRight) {
+                currentFrame = runRightAnimation.getKeyFrame(stateTime, true);
+            } else if (isRunningFront) {
+                currentFrame = runFrontAnimation.getKeyFrame(stateTime, true);
+            } else if (isRunningBack) {
+                currentFrame = runBackAnimation.getKeyFrame(stateTime, true);
+            } else {
+                currentFrame = idleAnimation.getKeyFrame(stateTime, true);
             }
         }
-        else if (isRunningRight) {
-            currentFrame = runRightAnimation.getKeyFrame(stateTime, true);
-        } else if (isRunningFront) {
-            currentFrame = runFrontAnimation.getKeyFrame(stateTime,true);
-        } else if (isRunningBack) {
-            currentFrame = runBackAnimation.getKeyFrame(stateTime,true);
-        } else {
-            currentFrame = idleAnimation.getKeyFrame(stateTime, true);
-        }
+
 
         batch.draw(currentFrame, drawX, getY(), drawWidth, getHeight());
     }
@@ -64,45 +81,47 @@ public class Knight extends Actor {
     }
 
     public void moverIzquierda(float delta) {
-        if(!isAttacking){
-        float newX = position.x - 200 * delta;
-        if (newX > 0) {
-            position.x = newX;
-        }
-        isFacingRight = false;
-        isRunningRight = true;
+        if (!isAttacking && !isDeath) {
+            float newX = position.x - Settings.KNIGHT_SPEED * delta;
+            if (newX > 0) {
+                position.x = newX;
+            }
+            isFacingRight = false;
+            isRunningRight = true;
         }
     }
 
     public void moverDerecha(float delta) {
-        if(!isAttacking){
-        float newX = position.x + 200 * delta;
-        if (newX + width < Settings.GAME_WIDTH) {
-            position.x = newX;
-        }
-        isFacingRight = true;
-        isRunningRight = true;
+        if (!isAttacking && !isDeath) {
+            float newX = position.x + Settings.KNIGHT_SPEED * delta;
+            if (newX + width < Settings.GAME_WIDTH) {
+                position.x = newX;
+            }
+            isFacingRight = true;
+            isRunningRight = true;
         }
     }
 
     public void moverArriba(float delta) {
-        if (!isAttacking) {
-            float newY = position.y + 200 * delta;
+        if (!isAttacking && !isDeath) {
+            float newY = position.y + Settings.KNIGHT_SPEED * delta;
             if (newY + height < Settings.GAME_HEIGHT) {
                 position.y = newY;
             }
             isRunningBack = true;
         }
     }
+
     public void moverAbajo(float delta) {
-        if (!isAttacking) {
-            float newY = position.y - 200 * delta;
+        if (!isAttacking && !isDeath) {
+            float newY = position.y - Settings.KNIGHT_SPEED * delta;
             if (newY > 0) {
                 position.y = newY;
             }
             isRunningFront = true;
         }
     }
+
     public void moverArribaIzquierda(float delta) {
         moverArriba(delta);
         moverIzquierda(delta);
@@ -148,11 +167,44 @@ public class Knight extends Actor {
         }
     }
 
+    public void hurt() {
+        if (!isHurting && !isAnimating) {
+            isAnimating = true;
+            isHurting = true;
+            stateTime = 0f;
+            this.receiveDamage(Settings.FIREBAT_DAMAGE_PER_ATTACK);
+            addAction(Actions.sequence(
+                    Actions.delay(hurtrightAnimation.getAnimationDuration()),
+                    Actions.run(() -> {
+                        isAnimating = false;
+                        isHurting = false;
+                    })
+            ));
+        }
+    }
+
+    public void receiveDamage(int damage) {
+        health -= damage;
+        System.out.println("Knight Health: " + health);
+        if (health <= 0) {
+            health = 0;
+            death();
+        }
+    }
+
+    public void death() {
+        if (!isDeath) {
+            isDeath = true;
+            stateTime = 0f;
+        }
+    }
+
     public void pararMovimiento() {
         isRunningFront = false;
         isRunningRight = false;
         isRunningBack = false;
     }
+
     public float getX() {
         return position.x;
     }
@@ -171,6 +223,14 @@ public class Knight extends Actor {
 
     public Rectangle getKnight() {
         return knight;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public int getMaxHealth() {
+        return Settings.KNIGHT_MAX_HEALTH;
     }
 
 }

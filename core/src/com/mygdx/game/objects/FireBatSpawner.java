@@ -40,23 +40,24 @@ public class FireBatSpawner {
             float duration = distance / speed;
 
             firebat.setFlyingRight(firebat.getX() > knightX);
+            firebat.setFlying(true);
 
             boolean isColliding = firebat.isColliding(knight);
 
             firebat.clearActions();
-            if (!firebat.isDeath) {
+            if (!firebat.isDeath && !knight.isDeath) {
                 firebat.addAction(Actions.sequence(
                         Actions.moveTo(knightX, knightY, duration),
                         Actions.run(() -> {
                             if (isColliding) {
                                 firebat.setAttacking();
+                                knight.hurt();
                             }
                         })
                 ));
             }
             if (firebat.isColliding(knight) && knight.isAttacking) {
                 if (knight.stateTime >= knight.attackRightAnimation.getAnimationDuration() / 4) {
-                    System.out.println(knight.attackRightAnimation.getAnimationDuration() / 4);
                     firebat.setDeath();
                 }
                 firebat.setDelay(0.08f);
@@ -72,8 +73,14 @@ public class FireBatSpawner {
                 firebat.setNotAttacking();
             }
 
+            if(knight.isDeath){
+                firebat.setFlying(false);
+            }
+
             firebat.act(delta);
         }
+
+
     }
 
     public Array<FireBat> getFirebats() {

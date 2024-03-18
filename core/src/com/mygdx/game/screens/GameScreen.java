@@ -91,7 +91,7 @@ public class GameScreen implements Screen {
 
         firebatSpawner.update(delta);
         spawnTimer += delta;
-        if (spawnTimer >= Settings.FIREBAR_SPAWNER) {
+        if (spawnTimer >= Settings.FIREBAT_SPAWNER) {
             spawnFirebat();
             spawnTimer = 0f;
         }
@@ -145,6 +145,9 @@ public class GameScreen implements Screen {
 
         if (Gdx.input.isKeyPressed(Input.Keys.E)) {
             knight.attack();
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.Q)){
+            knight.death();
         }
     }
 

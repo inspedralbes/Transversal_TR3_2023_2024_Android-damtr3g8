@@ -8,34 +8,45 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 public class AssetManager {
     public static Texture fondo;
-    public static Texture sheetidleright,sheetrunright,sheetattackright;
+    public static Texture sheetidleright,sheetrunright,sheetattackright,sheethurtright,sheetdeath;
     public static Texture sheetrunfront;
     public static Texture sheetrunback;
-    public static TextureAtlas flyfirebatAtlas,attackfirebatAtlas,deathfirebatAtlas; // Atlas que contiene las imágenes del murciélago
+    public static TextureAtlas flyfirebatAtlas,attackfirebatAtlas,deathfirebatAtlas;
+    public static Texture sleepfirebat;
     public static TextureRegion[] firebatFlyingFrames,firebatAttackingFrames,firebatDeathFrames;
-    public static TextureRegion[] idleright,runright,attackright;
+    public static TextureRegion[] idleright,runright,attackright,hurtright,death;
     public static TextureRegion[] runfront;
     public static TextureRegion[] runback;
-    public static Animation<TextureRegion> idlerightanimation,runrightanimation,attackrightanimation;
+    public static Animation<TextureRegion> idlerightanimation,runrightanimation,attackrightanimation,hurtrightanimation,deathanimation;
     public static Animation<TextureRegion> runfrontanimation;
     public static Animation<TextureRegion> runbackanimation;
     public static Animation<TextureRegion> firebatFlyinganimation,firebatAttackinganimation,firebatDeathanimation;
     public static Skin skin;
     public static void load(){
+        sheets();
+        knight();
+        firebat();
+        skin = new Skin(Gdx.files.internal("Skin/pixthulhu-ui.json"));
+    }
+
+    static void sheets(){
         fondo = new Texture(Gdx.files.internal("Fondo/fondo.png"));
 
         sheetidleright = new Texture(Gdx.files.internal("Knight/Right/idleright.png"));
         sheetrunright = new Texture(Gdx.files.internal("Knight/Right/runright.png"));
         sheetattackright = new Texture(Gdx.files.internal("Knight/Right/attackright.png"));
-
+        sheethurtright = new Texture(Gdx.files.internal("Knight/Right/hurtright.png"));
+        sheetdeath =  new Texture(Gdx.files.internal("Knight/Right/death.png"));
         sheetrunfront = new Texture(Gdx.files.internal("Knight/Front/runfront.png"));
-
         sheetrunback = new Texture(Gdx.files.internal("Knight/Back/runback.png"));
 
         flyfirebatAtlas = new TextureAtlas(Gdx.files.internal("Bat/Fire/Fly/firebatfly.txt"));
         attackfirebatAtlas = new TextureAtlas(Gdx.files.internal("Bat/Fire/Attack/firebatattack.txt"));
         deathfirebatAtlas = new TextureAtlas(Gdx.files.internal("Bat/Fire/Death/firebatdeath.txt"));
+        sleepfirebat = new Texture(Gdx.files.internal("Bat/Fire/Sleep/firebatsleep.png"));
 
+    }
+    static void knight(){
         TextureRegion[][] tmpIdle = TextureRegion.split(sheetidleright, 16, 17);
         idleright = new TextureRegion[4];
         idleright[0] = tmpIdle[0][0];
@@ -65,6 +76,29 @@ public class AssetManager {
         attackright[5] = new TextureRegion(sheetattackright, 112, 0, 18, 17);
         attackrightanimation = new Animation<>(0.08f,attackright);
 
+        hurtright = new TextureRegion[9];
+        hurtright[0] = new TextureRegion(sheethurtright, 0, 0, 16, 17);
+        hurtright[1] = new TextureRegion(sheethurtright, 16, 0, 16, 15);
+        hurtright[2] = new TextureRegion(sheethurtright, 32, 0, 16, 18);
+        hurtright[3] = new TextureRegion(sheethurtright, 48, 0, 16, 18);
+        hurtright[4] = new TextureRegion(sheethurtright, 64, 0, 16, 18);
+        hurtright[5] = new TextureRegion(sheethurtright, 80, 0, 16, 18);
+        hurtright[6] = new TextureRegion(sheethurtright, 96, 0, 16, 18);
+        hurtright[7] = new TextureRegion(sheethurtright, 112, 0, 16, 18);
+        hurtright[8] = new TextureRegion(sheethurtright, 128, 0, 16, 18);
+        hurtrightanimation = new Animation<>(0.08f,hurtright);
+
+        death = new TextureRegion[8];
+        death[0] = new TextureRegion(sheetdeath, 0, 0, 18, 17);
+        death[1] = new TextureRegion(sheetdeath, 18, 0, 16, 17);
+        death[2] = new TextureRegion(sheetdeath, 34, 0, 16, 17);
+        death[3] = new TextureRegion(sheetdeath, 50, 0, 15, 16);
+        death[4] = new TextureRegion(sheetdeath, 65, 0, 15, 16);
+        death[5] = new TextureRegion(sheetdeath, 80, 0, 18, 15);
+        death[6] = new TextureRegion(sheetdeath, 98, 0, 20, 14);
+        death[7] = new TextureRegion(sheetdeath, 118, 0, 21, 13);
+        deathanimation = new Animation<>(0.08f, death);
+
         runfront = new TextureRegion[8];
         runfront[0] = new TextureRegion(sheetrunfront, 0, 0, 17, 17);
         runfront[1] = new TextureRegion(sheetrunfront, 17, 0, 17, 16);
@@ -86,7 +120,8 @@ public class AssetManager {
         runback[6] = new TextureRegion(sheetrunback, 102, 0, 18, 16);
         runback[7] = new TextureRegion(sheetrunback, 120, 0, 18, 17);
         runbackanimation = new Animation<>(0.08f, runback);
-
+    }
+    static void firebat(){
         firebatFlyingFrames = new TextureRegion[4];
         for (int i = 0; i < 4; i++) {
             firebatFlyingFrames[i] = flyfirebatAtlas.findRegion("BatFire_Flying-" + i);
@@ -104,11 +139,8 @@ public class AssetManager {
             firebatDeathFrames[i] = deathfirebatAtlas.findRegion("BatFire_Death-" + i);
         }
         firebatDeathanimation = new Animation<>(0.08f,firebatDeathFrames);
-
-
-
-        skin = new Skin(Gdx.files.internal("Skin/pixthulhu-ui.json"));
     }
+
     public static void dispose(){
         fondo.dispose();
         sheetidleright.dispose();

@@ -1,0 +1,61 @@
+Attack-default.png
+size: 139, 17
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+CharAni-Sheet4-118
+  rotate: false
+  xy: 0, 0
+  size: 18, 17
+  orig: 32, 32
+  offset: 8, 7
+  index: -1
+CharAni-Sheet4-119
+  rotate: false
+  xy: 18, 0
+  size: 16, 17
+  orig: 32, 32
+  offset: 9, 7
+  index: -1
+CharAni-Sheet4-120
+  rotate: false
+  xy: 34, 0
+  size: 16, 17
+  orig: 32, 32
+  offset: 8, 7
+  index: -1
+CharAni-Sheet4-121
+  rotate: false
+  xy: 50, 0
+  size: 15, 16
+  orig: 32, 32
+  offset: 10, 7
+  index: -1
+CharAni-Sheet4-122
+  rotate: false
+  xy: 65, 0
+  size: 15, 16
+  orig: 32, 32
+  offset: 11, 7
+  index: -1
+CharAni-Sheet4-123
+  rotate: false
+  xy: 80, 0
+  size: 18, 15
+  orig: 32, 32
+  offset: 10, 7
+  index: -1
+CharAni-Sheet4-124
+  rotate: false
+  xy: 98, 0
+  size: 20, 14
+  orig: 32, 32
+  offset: 11, 7
+  index: -1
+CharAni-Sheet4-125
+  rotate: false
+  xy: 118, 0
+  size: 21, 13
+  orig: 32, 32
+  offset: 10, 6
+  index: -1

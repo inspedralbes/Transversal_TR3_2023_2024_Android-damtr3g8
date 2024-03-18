@@ -2,6 +2,7 @@ package com.mygdx.game.objects;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -14,14 +15,16 @@ import com.mygdx.game.utils.Settings;
 
 public class FireBat extends Actor {
     public Animation<TextureRegion> flyanimation, attackanimation, deathanimation;
+    public Texture sleep;
     private float stateTime;
-    public boolean isAttacking, flyingRight, isDeath;
+    public boolean isAttacking, flyingRight, isDeath, isFlying;
     float delay;
 
     public FireBat() {
         flyanimation = AssetManager.firebatFlyinganimation;
         attackanimation = AssetManager.firebatAttackinganimation;
         deathanimation = AssetManager.firebatDeathanimation;
+        sleep = AssetManager.sleepfirebat;
         stateTime = 0f;
         setSize(Settings.FIREBAT_WIDTH, Settings.FIREBAT_HEIGHT);
     }
@@ -48,10 +51,12 @@ public class FireBat extends Actor {
                 currentFrame = flyanimation.getKeyFrame(stateTime, true);
             }
         }
-        if (flyingRight) {
+        if (flyingRight && isFlying) {
             batch.draw(currentFrame, getX() + getWidth(), getY(), -getWidth(), getHeight());
-        } else {
+        } else if (!flyingRight && isFlying) {
             batch.draw(currentFrame, getX(), getY(), getWidth(), getHeight());
+        } else {
+            batch.draw(sleep, getX(), getY(), getWidth(), getHeight());
         }
     }
 
@@ -79,8 +84,8 @@ public class FireBat extends Actor {
     }
 
     public void drawBounds(ShapeRenderer shapeRenderer) {
-            shapeRenderer.setColor(new Color(1, 2, 1, 1));
-            shapeRenderer.rect(getX(), getY(), getWidth(), getHeight());
+        shapeRenderer.setColor(new Color(1, 2, 1, 1));
+        shapeRenderer.rect(getX(), getY(), getWidth(), getHeight());
     }
 
 
@@ -104,6 +109,14 @@ public class FireBat extends Actor {
 
     public void decreaseDelay(float delta) {
         delay -= delta;
+    }
+
+    public boolean isFlying() {
+        return isFlying;
+    }
+
+    public void setFlying(boolean flying) {
+        isFlying = flying;
     }
 
 }
