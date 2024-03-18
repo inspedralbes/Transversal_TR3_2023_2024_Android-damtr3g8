@@ -14,5 +14,5 @@ public class Settings {
     public static final int FIREBAT_WIDTH = 48;
     public static final int FIREBAT_HEIGHT = 48;
     public static final int FIREBAT_SPEED = 60;
-    public static final float FIREBAR_SPAWNER = 5f;
+    public static final float FIREBAR_SPAWNER = 7f;
 }

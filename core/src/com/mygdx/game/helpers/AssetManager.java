@@ -100,7 +100,7 @@ public class AssetManager {
         firebatAttackinganimation = new Animation<>(0.08f,firebatAttackingFrames);
 
         firebatDeathFrames = new TextureRegion[7];
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 7; i++) {
             firebatDeathFrames[i] = deathfirebatAtlas.findRegion("BatFire_Death-" + i);
         }
         firebatDeathanimation = new Animation<>(0.08f,firebatDeathFrames);

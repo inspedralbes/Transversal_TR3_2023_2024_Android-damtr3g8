@@ -70,13 +70,9 @@ public class GameScreen implements Screen {
     }
 
     private void drawElements() {
-        // Recollim les propietats del batch de l'stage
         shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-
         shapeRenderer.setColor(new Color(0, 0, 1, 1));
-
-
         shapeRenderer.rect(knight.getX(), knight.getY(), knight.getWidth(), knight.getHeight());
         shapeRenderer.rect(background.getX(),background.getY(),background.getWidth(),background.getHeight());
         for (FireBat firebat : firebatSpawner.getFirebats()) {
@@ -93,10 +89,9 @@ public class GameScreen implements Screen {
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
 
-
         firebatSpawner.update(delta);
         spawnTimer += delta;
-        if (spawnTimer >= Settings.FIREBAR_SPAWNER) { // Ajusta el tiempo entre cada aparición
+        if (spawnTimer >= Settings.FIREBAR_SPAWNER) {
             spawnFirebat();
             spawnTimer = 0f;
         }
@@ -105,23 +100,19 @@ public class GameScreen implements Screen {
         handleInput(delta);
     }
     private void spawnFirebat() {
-        // Calcula la posición inicial y final del murciélago
-        float startX, startY, endX, endY;
-        startX = MathUtils.randomBoolean() ? -50 : Settings.GAME_WIDTH+50; // Aparece en el lado izquierdo o derecho
+        float startX, startY;
+        startX = MathUtils.randomBoolean() ? -50 : Settings.GAME_WIDTH+50;
         startY = MathUtils.random(0, Settings.GAME_HEIGHT);
-        endX = Settings.GAME_WIDTH - startX; // Opuesto al inicio
-        endY = MathUtils.random(0, Settings.GAME_HEIGHT);
 
         Array<FireBat> fireBats = firebatSpawner.getFirebats();
-
-        // Crea y añade el murciélago al spawner
         firebatSpawner.spawnFirebat(startX, startY);
         for (FireBat firebat: fireBats) {
             stage.addActor(firebat);
         }
-
         Gdx.app.log("Spawn", "Nuevo murciélago creado en: " + startX + ", " + startY);
     }
+
+
     private void handleInput(float delta) {
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             knight.moverIzquierda(delta);
@@ -132,7 +123,6 @@ public class GameScreen implements Screen {
         } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
             knight.moverAbajo(delta);
         }
-
         /*if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
             if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
                 knight.moverArribaIzquierda(delta);
@@ -157,7 +147,6 @@ public class GameScreen implements Screen {
             knight.attack();
         }
     }
-
 
     @Override
     public void resize(int width, int height) {

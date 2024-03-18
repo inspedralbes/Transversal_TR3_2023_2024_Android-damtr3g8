@@ -40,7 +40,6 @@ public class LoginScreen implements Screen {
         stage.addActor(table);
         table.center();
 
-        // Crear los elementos de la pantalla de inicio de sesión
         usernameLabel = new Label("Username:", skin);
         final TextField usernameField = new TextField("", skin);
         passwordLabel = new Label("Password:", skin);
@@ -50,7 +49,6 @@ public class LoginScreen implements Screen {
         loginButton = new TextButton("Login", skin);
         registerButton = new TextButton("Register", skin);
 
-        // Añadir los elementos a la tabla
         table.add(usernameLabel).padBottom(10).align(Align.center);
         table.add(usernameField).width(200).padBottom(20);
         table.row();
@@ -60,25 +58,21 @@ public class LoginScreen implements Screen {
         table.add(loginButton).width(250).padBottom(10).padRight(10);
         table.add(registerButton).width(250).padBottom(10);
 
-        // Configurar el botón de login para manejar la autenticación
         loginButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 String username = usernameField.getText();
                 String password = passwordField.getText();
-                // Implementar la lógica de autenticación aquí
             }
         });
 
-        // Configurar el botón de cancelar para volver atrás
         registerButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.setScreen(new MainMenuScreen(game)); // Volver al menú principal u otra pantalla
+                game.setScreen(new MainMenuScreen(game));
             }
         });
 
-        // Habilitar el input processor para que los elementos de la interfaz puedan recibir eventos de entrada
         Gdx.input.setInputProcessor(stage);
     }
 
@@ -87,7 +81,6 @@ public class LoginScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        // Actualizar y dibujar el stage
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
     }

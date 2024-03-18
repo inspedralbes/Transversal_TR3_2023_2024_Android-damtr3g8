@@ -23,9 +23,7 @@ public class Knight extends Actor {
         this.height = height;
         position = new Vector2(x, y);
         isFacingRight = true;
-
         knight = new Rectangle();
-
         idleAnimation = AssetManager.idlerightanimation;
         runRightAnimation = AssetManager.runrightanimation;
         attackRightAnimation = AssetManager.attackrightanimation;
@@ -66,41 +64,44 @@ public class Knight extends Actor {
     }
 
     public void moverIzquierda(float delta) {
-        //if(!isAttacking){
-        float newX = position.x - 200 * delta; // Ajusta la velocidad según tus necesidades
+        if(!isAttacking){
+        float newX = position.x - 200 * delta;
         if (newX > 0) {
             position.x = newX;
         }
         isFacingRight = false;
         isRunningRight = true;
-        //}
+        }
     }
 
     public void moverDerecha(float delta) {
-        //if(!isAttacking){
-        float newX = position.x + 200 * delta; // Ajusta la velocidad según tus necesidades
+        if(!isAttacking){
+        float newX = position.x + 200 * delta;
         if (newX + width < Settings.GAME_WIDTH) {
             position.x = newX;
         }
         isFacingRight = true;
         isRunningRight = true;
-        //}
+        }
     }
 
     public void moverArriba(float delta) {
-        float newY = position.y + 200 * delta; // Ajusta la velocidad según tus necesidades
-        if (newY + height < Settings.GAME_HEIGHT) {
-            position.y = newY;
+        if (!isAttacking) {
+            float newY = position.y + 200 * delta;
+            if (newY + height < Settings.GAME_HEIGHT) {
+                position.y = newY;
+            }
+            isRunningBack = true;
         }
-        isRunningBack = true;
     }
-
     public void moverAbajo(float delta) {
-        float newY = position.y - 200 * delta; // Ajusta la velocidad según tus necesidades
-        if (newY > 0) {
-            position.y = newY;
+        if (!isAttacking) {
+            float newY = position.y - 200 * delta;
+            if (newY > 0) {
+                position.y = newY;
+            }
+            isRunningFront = true;
         }
-        isRunningFront = true;
     }
     public void moverArribaIzquierda(float delta) {
         moverArriba(delta);
@@ -125,7 +126,7 @@ public class Knight extends Actor {
 
     public void attack() {
         if (!isAttacking) {
-            //isAnimating = true; // Indicar que se está reproduciendo una animación
+            //isAnimating = true;
             isAttacking = true;
             stateTime = 0;
             /*if (soundsEnabled) {

@@ -13,11 +13,10 @@ import com.mygdx.game.helpers.AssetManager;
 import com.mygdx.game.utils.Settings;
 
 public class FireBat extends Actor {
-    private Animation<TextureRegion> flyanimation, attackanimation, deathanimation;
+    public Animation<TextureRegion> flyanimation, attackanimation, deathanimation;
     private float stateTime;
-    private boolean flyingRight;
-    private boolean isAttacking;
-    boolean isDeath;
+    public boolean isAttacking, flyingRight, isDeath;
+    float delay;
 
     public FireBat() {
         flyanimation = AssetManager.firebatFlyinganimation;
@@ -40,63 +39,71 @@ public class FireBat extends Actor {
         if (isDeath) {
             currentFrame = deathanimation.getKeyFrame(stateTime, false);
             if (deathanimation.isAnimationFinished(stateTime)) {
-                //remove();
+                remove();
             }
         } else {
-            if(isAttacking){
-                currentFrame =  attackanimation.getKeyFrame(stateTime, true) ;
-            }
-            else{
-                currentFrame =  flyanimation.getKeyFrame(stateTime, true);
+            if (isAttacking) {
+                currentFrame = attackanimation.getKeyFrame(stateTime, true);
+            } else {
+                currentFrame = flyanimation.getKeyFrame(stateTime, true);
             }
         }
-        /*if (flyingRight) {
+        if (flyingRight) {
             batch.draw(currentFrame, getX() + getWidth(), getY(), -getWidth(), getHeight());
-        } else {*/
+        } else {
             batch.draw(currentFrame, getX(), getY(), getWidth(), getHeight());
-        //}
+        }
     }
 
     public void setFlyingRight(boolean flyingRight) {
         this.flyingRight = flyingRight;
     }
 
-    public void setAttacking(boolean attacking) {
-        isAttacking = attacking;
+    public void setAttacking() {
+        if (!isAttacking) {
+            isAttacking = true;
+            System.out.println("Ataque del murcielago");
+        }
+
     }
 
-    public void setDeath(){
-        isDeath = true;
+    public void setDeath() {
+        if (!isDeath) {
+            isDeath = true;
+            stateTime = 0f;
+        }
+    }
+
+    public boolean isDeath() {
+        return isDeath;
     }
 
     public void drawBounds(ShapeRenderer shapeRenderer) {
-        // Establece el color de los bordes
-        shapeRenderer.setColor(new Color(1, 2, 1, 1));
-        // Dibuja el borde del actor (murciélago)
-        shapeRenderer.rect(getX(), getY(), getWidth(), getHeight());
+            shapeRenderer.setColor(new Color(1, 2, 1, 1));
+            shapeRenderer.rect(getX(), getY(), getWidth(), getHeight());
     }
+
 
     public boolean isColliding(Knight knight) {
-        // Define los puntos de colisión del caballero
-        Rectangle knightBounds = new Rectangle(knight.getX(), knight.getY(), knight.getWidth(), knight.getHeight());
-        float knightCenterX = knightBounds.x + knightBounds.width / 2;
-        float knightCenterY = knightBounds.y + knightBounds.height / 2;
-
-        // Verifica la colisión en cada sub-rectángulo del caballero
         Rectangle batBounds = new Rectangle(getX(), getY(), getWidth(), getHeight());
-        boolean collisionDetected = false;
-        if (batBounds.overlaps(knightBounds)) {
-            collisionDetected = true; // Colisión con el rectángulo del caballero
-        } else if (batBounds.contains(knightBounds.x, knightBounds.y)) {
-            collisionDetected = true; // Colisión con la parte superior izquierda del caballero
-        } else if (batBounds.contains(knightBounds.x + knightBounds.width, knightBounds.y)) {
-            collisionDetected = true; // Colisión con la parte superior derecha del caballero
-        } else if (batBounds.contains(knightBounds.x, knightBounds.y + knightBounds.height)) {
-            collisionDetected = true; // Colisión con la parte inferior izquierda del caballero
-        } else if (batBounds.contains(knightBounds.x + knightBounds.width, knightBounds.y + knightBounds.height)) {
-            collisionDetected = true; // Colisión con la parte inferior derecha del caballero
-        }
-
-        return collisionDetected;
+        Rectangle knightBounds = new Rectangle(knight.getX(), knight.getY(), knight.getWidth(), knight.getHeight());
+        return batBounds.overlaps(knightBounds);
     }
+
+    public void setNotAttacking() {
+        isAttacking = false;
+    }
+
+    public void setDelay(float delay) {
+        this.delay = delay;
+    }
+
+    public float getDelay() {
+        return delay;
+    }
+
+    public void decreaseDelay(float delta) {
+        delay -= delta;
+    }
+
 }
