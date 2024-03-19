@@ -8,14 +8,15 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.game.helpers.AssetManager;
+import com.mygdx.game.helpers.BatDeathListener;
 import com.mygdx.game.objects.Background;
 import com.mygdx.game.objects.FireBat;
 import com.mygdx.game.objects.FireBatSpawner;
@@ -23,22 +24,28 @@ import com.mygdx.game.objects.Knight;
 import com.mygdx.game.utils.AppPreferences;
 import com.mygdx.game.utils.Settings;
 
-public class GameScreen implements Screen {
+public class GameScreen implements Screen, BatDeathListener {
     private Stage stage;
     private Batch batch;
     OrthographicCamera camera;
     private ShapeRenderer shapeRenderer;
     private GlyphLayout textLayout;
     private Knight knight;
-    private FireBat fireBat;
     private FireBatSpawner firebatSpawner;
     private float spawnTimer;
     private Background background;
+    private Skin skin = AssetManager.skin;
+    private Label scoreLabel;
+    private int score = 0;
+    private boolean doubleLifeEnabled = false;
+    private boolean tripleLifeEnabled = false;
+    private boolean quintupleLifeEnabled = false;
+
     AppPreferences preferences = new AppPreferences();
     boolean musicEnabled = preferences.isMusicEnabled();
     float musicVolume = preferences.getMusicVolume();
 
-    public GameScreen(){
+    public GameScreen() {
         /*if (musicEnabled) {
             AssetManager.music.setVolume(musicVolume);
             AssetManager.music.play();
@@ -50,13 +57,16 @@ public class GameScreen implements Screen {
         stage = new Stage(viewport);
         batch = stage.getBatch();
 
-
+        scoreLabel = new Label("Score: 0", skin);
+        scoreLabel.setPosition(20, 900);
         background = new Background(AssetManager.fondo);
-        knight = new Knight(Settings.KNIGHT_STARTX,Settings.KNIGHT_STARTY,Settings.KNIGHT_WIDTH,Settings.KNIGHT_HEIGHT);
+        knight = new Knight(Settings.KNIGHT_STARTX, Settings.KNIGHT_STARTY, Settings.KNIGHT_WIDTH, Settings.KNIGHT_HEIGHT);
 
         stage.addActor(background);
         stage.addActor(knight);
-        firebatSpawner = new FireBatSpawner(knight);
+        stage.addActor(scoreLabel);
+
+        firebatSpawner = new FireBatSpawner(knight, this);
         spawnTimer = 0f;
         spawnFirebat();
 
@@ -64,6 +74,7 @@ public class GameScreen implements Screen {
 
         //Gdx.input.setInputProcessor(new InputHandler(this));
     }
+
     @Override
     public void show() {
 
@@ -74,13 +85,14 @@ public class GameScreen implements Screen {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(new Color(0, 0, 1, 1));
         shapeRenderer.rect(knight.getX(), knight.getY(), knight.getWidth(), knight.getHeight());
-        shapeRenderer.rect(background.getX(),background.getY(),background.getWidth(),background.getHeight());
+        shapeRenderer.rect(background.getX(), background.getY(), background.getWidth(), background.getHeight());
         for (FireBat firebat : firebatSpawner.getFirebats()) {
             firebat.drawBounds(shapeRenderer);
         }
 
         shapeRenderer.end();
     }
+
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -92,7 +104,7 @@ public class GameScreen implements Screen {
 
         firebatSpawner.update(delta);
 
-        if (!knight.isDeath){
+        if (!knight.isDeath) {
             spawnTimer += delta;
             if (spawnTimer >= Settings.FIREBAT_SPAWNER) {
                 spawnFirebat();
@@ -102,17 +114,18 @@ public class GameScreen implements Screen {
         drawElements();
         handleInput(delta);
     }
+
     private void spawnFirebat() {
         float startX, startY;
-        startX = MathUtils.randomBoolean() ? -50 : Settings.GAME_WIDTH+50;
+        startX = MathUtils.randomBoolean() ? -50 : Settings.GAME_WIDTH + 50;
         startY = MathUtils.random(0, Settings.GAME_HEIGHT);
 
         Array<FireBat> fireBats = firebatSpawner.getFirebats();
         firebatSpawner.spawnFirebat(startX, startY);
-        for (FireBat firebat: fireBats) {
+        for (FireBat firebat : fireBats) {
             stage.addActor(firebat);
         }
-        Gdx.app.log("Spawn", "Nuevo murciélago creado en: " + startX + ", " + startY);
+        //Gdx.app.log("Spawn", "Nuevo murciélago creado en: " + startX + ", " + startY);
     }
 
 
@@ -149,9 +162,39 @@ public class GameScreen implements Screen {
         if (Gdx.input.isKeyPressed(Input.Keys.E)) {
             knight.attack();
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.Q)){
-            knight.death();
+    }
+
+    @Override
+    public void onBatDeath() {
+        if (score >= 0 && score < 100) {
+            score += Settings.FIREBAT_SCORE;
+        } else if (score >= 100 && score < 300) {
+            score += Settings.FIREBAT_SCORE + Settings.FIREBAT_SCORE_INCREASE_LEVEL1;
+            if (!doubleLifeEnabled) {
+                doubleLifeEnabled = true;
+                firebatSpawner.setDoubleLifeEnabled();
+                Gdx.app.log("Double Life", "La vida de los siguientes murciélagos se ha duplicado.");
+            }
+        } else if (score >= 300 && score < 600) {
+            score += Settings.FIREBAT_SCORE + Settings.FIREBAT_SCORE_INCREASE_LEVEL2;
+            if (!tripleLifeEnabled) {
+                tripleLifeEnabled = true;
+                firebatSpawner.setTripleLifeEnabled();
+                Gdx.app.log("Triple Life", "La vida de los siguientes murciélagos se ha triplicado.");
+            }
+        } else if (score >= 600) {
+            score += Settings.FIREBAT_SCORE + +Settings.FIREBAT_SCORE_INCREASE_LEVEL3;
+            if (!quintupleLifeEnabled) {
+                quintupleLifeEnabled = true;
+                firebatSpawner.setQuintupleLifeEnabled();
+                Gdx.app.log("Quintuple Life", "La vida de los siguientes murciélagos se ha quintuplicado.");
+            }
         }
+        updateScoreLabel();
+    }
+
+    private void updateScoreLabel() {
+        scoreLabel.setText("Score: " + score);
     }
 
     @Override
@@ -179,4 +222,5 @@ public class GameScreen implements Screen {
         stage.dispose();
         AssetManager.dispose();
     }
+
 }

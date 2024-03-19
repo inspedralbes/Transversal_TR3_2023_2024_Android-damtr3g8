@@ -11,16 +11,16 @@ public class AssetManager {
     public static Texture sheetidleright,sheetrunright,sheetattackright,sheethurtright,sheetdeath;
     public static Texture sheetrunfront;
     public static Texture sheetrunback;
-    public static TextureAtlas flyfirebatAtlas,attackfirebatAtlas,deathfirebatAtlas;
+    public static TextureAtlas flyfirebatAtlas,attackfirebatAtlas,deathfirebatAtlas,hurtfirebatAtlas;
     public static Texture sleepfirebat;
-    public static TextureRegion[] firebatFlyingFrames,firebatAttackingFrames,firebatDeathFrames;
+    public static TextureRegion[] firebatFlyingFrames,firebatAttackingFrames,firebatDeathFrames,firebatHurtFrames;
     public static TextureRegion[] idleright,runright,attackright,hurtright,death;
     public static TextureRegion[] runfront;
     public static TextureRegion[] runback;
     public static Animation<TextureRegion> idlerightanimation,runrightanimation,attackrightanimation,hurtrightanimation,deathanimation;
     public static Animation<TextureRegion> runfrontanimation;
     public static Animation<TextureRegion> runbackanimation;
-    public static Animation<TextureRegion> firebatFlyinganimation,firebatAttackinganimation,firebatDeathanimation;
+    public static Animation<TextureRegion> firebatFlyinganimation,firebatAttackinganimation,firebatDeathanimation,firebatHurtanimation;
     public static Skin skin;
     public static void load(){
         sheets();
@@ -42,6 +42,7 @@ public class AssetManager {
 
         flyfirebatAtlas = new TextureAtlas(Gdx.files.internal("Bat/Fire/Fly/firebatfly.txt"));
         attackfirebatAtlas = new TextureAtlas(Gdx.files.internal("Bat/Fire/Attack/firebatattack.txt"));
+        hurtfirebatAtlas = new TextureAtlas(Gdx.files.internal("Bat/Fire/Hurt/firebathurt.txt"));
         deathfirebatAtlas = new TextureAtlas(Gdx.files.internal("Bat/Fire/Death/firebatdeath.txt"));
         sleepfirebat = new Texture(Gdx.files.internal("Bat/Fire/Sleep/firebatsleep.png"));
 
@@ -139,6 +140,12 @@ public class AssetManager {
             firebatDeathFrames[i] = deathfirebatAtlas.findRegion("BatFire_Death-" + i);
         }
         firebatDeathanimation = new Animation<>(0.08f,firebatDeathFrames);
+
+        firebatHurtFrames = new TextureRegion[4];
+        for (int i = 0; i < 4; i++) {
+            firebatHurtFrames[i] = hurtfirebatAtlas.findRegion("BatFire_Hurt-" + i);
+        }
+        firebatHurtanimation = new Animation<>(0.12f,firebatHurtFrames);
     }
 
     public static void dispose(){
@@ -148,6 +155,12 @@ public class AssetManager {
         sheetrunfront.dispose();
         sheetrunback.dispose();
         sheetattackright.dispose();
+        sheethurtright.dispose();
+        sheetdeath.dispose();
+        flyfirebatAtlas.dispose();
+        attackfirebatAtlas.dispose();
+        deathfirebatAtlas.dispose();
+        sleepfirebat.dispose();
         skin.dispose();
     }
 }

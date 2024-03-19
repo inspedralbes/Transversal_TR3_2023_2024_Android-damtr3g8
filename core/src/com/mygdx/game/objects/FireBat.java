@@ -14,17 +14,20 @@ import com.mygdx.game.helpers.AssetManager;
 import com.mygdx.game.utils.Settings;
 
 public class FireBat extends Actor {
-    public Animation<TextureRegion> flyanimation, attackanimation, deathanimation;
+    public Animation<TextureRegion> flyanimation, attackanimation, deathanimation,hurtanimation;
     public Texture sleep;
     private float stateTime;
-    public boolean isAttacking, flyingRight, isDeath, isFlying;
+    public boolean isAttacking, flyingRight,isHurt, isDeath, isFlying,canMoveAfterDamage;
     float delay;
+    private int health = Settings.FIREBAT_HEALTH;
 
     public FireBat() {
         flyanimation = AssetManager.firebatFlyinganimation;
         attackanimation = AssetManager.firebatAttackinganimation;
+        hurtanimation = AssetManager.firebatHurtanimation;
         deathanimation = AssetManager.firebatDeathanimation;
         sleep = AssetManager.sleepfirebat;
+        canMoveAfterDamage = true;
         stateTime = 0f;
         setSize(Settings.FIREBAT_WIDTH, Settings.FIREBAT_HEIGHT);
     }
@@ -47,6 +50,11 @@ public class FireBat extends Actor {
         } else {
             if (isAttacking) {
                 currentFrame = attackanimation.getKeyFrame(stateTime, true);
+            } else if (isHurt) {
+                currentFrame = hurtanimation.getKeyFrame(stateTime, false);
+                if (hurtanimation.isAnimationFinished(stateTime)) {
+                    isHurt = false;
+                }
             } else {
                 currentFrame = flyanimation.getKeyFrame(stateTime, true);
             }
@@ -70,6 +78,32 @@ public class FireBat extends Actor {
             System.out.println("Ataque del murcielago");
         }
 
+    }
+
+    public void hurt() {
+        if (!isHurt) {
+            isHurt = true;
+            isFlying = false;
+            canMoveAfterDamage = true;
+            stateTime = 0f;
+            this.receiveDamage(Settings.KNIGHT_DAMAGE_PER_ATTACK);
+            clearActions();
+            addAction(Actions.sequence(
+                    Actions.delay(2),
+                    Actions.run(() -> {
+                        isFlying = true;
+                        canMoveAfterDamage = false;
+                    })
+            ));
+        }
+    }
+
+    public void receiveDamage(int damage) {
+        health -= damage;
+        System.out.println("Firebat Health: " + health);
+        if (health <= 0) {
+            setDeath();
+        }
     }
 
     public void setDeath() {
@@ -119,4 +153,11 @@ public class FireBat extends Actor {
         isFlying = flying;
     }
 
+    public int getHealth() {
+        return health;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
+    }
 }

@@ -1,5 +1,6 @@
 package com.mygdx.game.objects;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -80,6 +81,7 @@ public class Knight extends Actor {
         knight.set(position.x, position.y, width, height);
     }
 
+
     public void moverIzquierda(float delta) {
         if (!isAttacking && !isDeath) {
             float newX = position.x - Settings.KNIGHT_SPEED * delta;
@@ -157,13 +159,13 @@ public class Knight extends Actor {
                         })
                 ));
             }*/
-            /*addAction(Actions.sequence(
-                    Actions.delay(attackAnimation.getAnimationDuration()),
+            addAction(Actions.sequence(
+                    Actions.delay(attackRightAnimation .getAnimationDuration()),
                     Actions.run(() -> {
-                        isAnimating = false;
+                        //isAnimating = false;
                         isAttacking = false;
                     })
-            ));*/
+            ));
         }
     }
 

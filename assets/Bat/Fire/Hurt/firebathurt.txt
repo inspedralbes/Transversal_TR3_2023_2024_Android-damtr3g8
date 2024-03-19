@@ -1,0 +1,33 @@
+firebathurt.png
+size: 128, 32
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+BatFire_Hurt-0
+  rotate: false
+  xy: 1, 1
+  size: 30, 30
+  orig: 30, 30
+  offset: 0, 0
+  index: -1
+BatFire_Hurt-1
+  rotate: false
+  xy: 33, 1
+  size: 30, 30
+  orig: 30, 30
+  offset: 0, 0
+  index: -1
+BatFire_Hurt-2
+  rotate: false
+  xy: 65, 1
+  size: 30, 30
+  orig: 30, 30
+  offset: 0, 0
+  index: -1
+BatFire_Hurt-3
+  rotate: false
+  xy: 97, 1
+  size: 30, 30
+  orig: 30, 30
+  offset: 0, 0
+  index: -1

@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.Array;
+import com.mygdx.game.helpers.BatDeathListener;
 import com.mygdx.game.utils.Settings;
 
 import java.util.Iterator;
@@ -13,10 +14,14 @@ public class FireBatSpawner {
     private Array<FireBat> firebats;
     private boolean flyingRight;
     private Knight knight;
+    private int score;
+    private boolean doubleLifeEnabled,tripleLifeEnabled,quintupleLifeEnabled;
+    private BatDeathListener batDeathListener;
 
-    public FireBatSpawner(Knight knight) {
+    public FireBatSpawner(Knight knight,BatDeathListener batDeathListener) {
         firebats = new Array<>();
         this.knight = knight;
+        this.batDeathListener = batDeathListener;
     }
 
     public void spawnFirebat(float startX, float startY) {
@@ -56,9 +61,12 @@ public class FireBatSpawner {
                         })
                 ));
             }
-            if (firebat.isColliding(knight) && knight.isAttacking) {
-                if (knight.stateTime >= knight.attackRightAnimation.getAnimationDuration() / 4) {
-                    firebat.setDeath();
+
+            if (isColliding && knight.isAttacking) {
+                if (knight.stateTime >= knight.attackRightAnimation.getAnimationDuration()/2) {
+                    firebat.hurt();
+                    /*score += Settings.FIREBAT_SCORE; // Incrementa la puntuación
+                    Gdx.app.log("Score", "Puntuación actual: " + score);*/
                 }
                 firebat.setDelay(0.08f);
             }
@@ -67,6 +75,7 @@ public class FireBatSpawner {
                 if (firebat.getDelay() <= 0) {
                     firebat.remove();
                     iterator.remove();
+                    batDeathListener.onBatDeath();
                 }
             }
             if (!isColliding) {
@@ -75,6 +84,26 @@ public class FireBatSpawner {
 
             if(knight.isDeath){
                 firebat.setFlying(false);
+            }
+
+            if (doubleLifeEnabled) {
+                    if (firebat.getHealth() == Settings.FIREBAT_HEALTH) {
+                        firebat.setHealth(Settings.FIREBAT_HEALTH * Settings.FIREBAT_HEALTH_INCREASE_LEVEL1);
+                        Gdx.app.log("Double Life", "La vida de un murciélago se ha duplicado.");
+                }
+            }
+            if (tripleLifeEnabled) {
+                    if (firebat.getHealth() == Settings.FIREBAT_HEALTH * Settings.FIREBAT_HEALTH_INCREASE_LEVEL1) {
+                        firebat.setHealth(Settings.FIREBAT_HEALTH * Settings.FIREBAT_HEALTH_INCREASE_LEVEL2);
+                        Gdx.app.log("Triple Life", "La vida de un murciélago se ha triplicado.");
+                }
+            }
+
+            if (quintupleLifeEnabled) {
+                    if (firebat.getHealth() == Settings.FIREBAT_HEALTH * Settings.FIREBAT_HEALTH_INCREASE_LEVEL2) {
+                        firebat.setHealth(Settings.FIREBAT_HEALTH * Settings.FIREBAT_HEALTH_INCREASE_LEVEL3);
+                        Gdx.app.log("Quintuple Life", "La vida de un murciélago se ha quintuplicado.");
+                    }
             }
 
             firebat.act(delta);
@@ -93,5 +122,16 @@ public class FireBatSpawner {
 
     public void setFlyingRight(boolean flyingRight) {
         this.flyingRight = flyingRight;
+    }
+    public void setDoubleLifeEnabled() {
+        this.doubleLifeEnabled = true;
+        System.out.println(doubleLifeEnabled);
+    }
+    public void setTripleLifeEnabled() {
+        this.tripleLifeEnabled = true;
+    }
+
+    public void setQuintupleLifeEnabled() {
+        this.quintupleLifeEnabled = true;
     }
 }
