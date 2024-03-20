@@ -1,5 +1,7 @@
 package com.mygdx.game.screens;
 
+
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -7,14 +9,23 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.mygdx.game.Videojoc;
 import com.mygdx.game.helpers.AssetManager;
 import com.mygdx.game.helpers.BatDeathListener;
 import com.mygdx.game.objects.Background;
@@ -25,42 +36,49 @@ import com.mygdx.game.utils.AppPreferences;
 import com.mygdx.game.utils.Settings;
 
 public class GameScreen implements Screen, BatDeathListener {
+    private Videojoc game;
     private Stage stage;
     private Batch batch;
     OrthographicCamera camera;
     private ShapeRenderer shapeRenderer;
-    private GlyphLayout textLayout;
+    private GlyphLayout textLayoutOver, textLayoutFinalScore;
     private Knight knight;
     private FireBatSpawner firebatSpawner;
     private float spawnTimer;
     private Background background;
     private Skin skin = AssetManager.skin;
+    BitmapFont fontTitulo = skin.getFont("title");
+    BitmapFont fontSubtitulo = skin.getFont("subtitle");
     private Label scoreLabel;
-    private int score = 0;
+    private TextButton backButton;
+    private int score = Settings.GAME_INITIAL_SCORE;
     private boolean doubleLifeEnabled = false;
     private boolean tripleLifeEnabled = false;
     private boolean quintupleLifeEnabled = false;
-
+    private boolean gameOver = false;
+    private Table gameOverWindow;
     AppPreferences preferences = new AppPreferences();
     boolean musicEnabled = preferences.isMusicEnabled();
     float musicVolume = preferences.getMusicVolume();
 
-    public GameScreen() {
+    public GameScreen(Videojoc game) {
         /*if (musicEnabled) {
             AssetManager.music.setVolume(musicVolume);
             AssetManager.music.play();
         }*/
-
+        this.game = game;
         shapeRenderer = new ShapeRenderer();
         camera = new OrthographicCamera(Settings.GAME_WIDTH, Settings.GAME_HEIGHT);
         StretchViewport viewport = new StretchViewport(Settings.GAME_WIDTH, Settings.GAME_HEIGHT, camera);
         stage = new Stage(viewport);
         batch = stage.getBatch();
 
-        scoreLabel = new Label("Score: 0", skin);
+        scoreLabel = new Label("Score: " + score, skin);
         scoreLabel.setPosition(20, 900);
+
         background = new Background(AssetManager.fondo);
         knight = new Knight(Settings.KNIGHT_STARTX, Settings.KNIGHT_STARTY, Settings.KNIGHT_WIDTH, Settings.KNIGHT_HEIGHT);
+        knight.setName("Knight");
 
         stage.addActor(background);
         stage.addActor(knight);
@@ -70,9 +88,7 @@ public class GameScreen implements Screen, BatDeathListener {
         spawnTimer = 0f;
         spawnFirebat();
 
-        knight.setName("Knight");
-
-        //Gdx.input.setInputProcessor(new InputHandler(this));
+        Gdx.input.setInputProcessor(stage);
     }
 
     @Override
@@ -110,8 +126,28 @@ public class GameScreen implements Screen, BatDeathListener {
                 spawnFirebat();
                 spawnTimer = 0f;
             }
+        } else {
+            textLayoutOver = new GlyphLayout();
+            textLayoutOver.setText(fontTitulo, "Game Over");
+            textLayoutFinalScore = new GlyphLayout();
+            textLayoutFinalScore.setText(fontSubtitulo, "Puntuacion Total: " + score);
+            batch.begin();
+            fontTitulo.draw(batch, textLayoutOver, (Settings.GAME_WIDTH - textLayoutOver.width) / 2, (float) (Settings.GAME_HEIGHT + 200) / 2);
+            fontSubtitulo.draw(batch, textLayoutFinalScore, (Settings.GAME_WIDTH - textLayoutFinalScore.width) / 2, (float) (Settings.GAME_HEIGHT) / 2);
+            batch.end();
+
+            backButton = new TextButton("Volver al Menu", skin);
+            backButton.setPosition((Settings.GAME_WIDTH - backButton.getWidth()) / 2, 100);
+            stage.addActor(backButton);
+            backButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    game.setScreen(new MainMenuScreen(game));
+                }
+            });
+
         }
-        drawElements();
+        //drawElements();
         handleInput(delta);
     }
 
@@ -169,26 +205,26 @@ public class GameScreen implements Screen, BatDeathListener {
         if (score >= 0 && score < 100) {
             score += Settings.FIREBAT_SCORE;
         } else if (score >= 100 && score < 300) {
-            score += Settings.FIREBAT_SCORE + Settings.FIREBAT_SCORE_INCREASE_LEVEL1;
             if (!doubleLifeEnabled) {
                 doubleLifeEnabled = true;
                 firebatSpawner.setDoubleLifeEnabled();
                 Gdx.app.log("Double Life", "La vida de los siguientes murciélagos se ha duplicado.");
             }
+            score += Settings.FIREBAT_SCORE + Settings.FIREBAT_SCORE_INCREASE_LEVEL1;
         } else if (score >= 300 && score < 600) {
-            score += Settings.FIREBAT_SCORE + Settings.FIREBAT_SCORE_INCREASE_LEVEL2;
             if (!tripleLifeEnabled) {
                 tripleLifeEnabled = true;
                 firebatSpawner.setTripleLifeEnabled();
                 Gdx.app.log("Triple Life", "La vida de los siguientes murciélagos se ha triplicado.");
             }
+            score += Settings.FIREBAT_SCORE + Settings.FIREBAT_SCORE_INCREASE_LEVEL2;
         } else if (score >= 600) {
-            score += Settings.FIREBAT_SCORE + +Settings.FIREBAT_SCORE_INCREASE_LEVEL3;
             if (!quintupleLifeEnabled) {
                 quintupleLifeEnabled = true;
                 firebatSpawner.setQuintupleLifeEnabled();
                 Gdx.app.log("Quintuple Life", "La vida de los siguientes murciélagos se ha quintuplicado.");
             }
+            score += Settings.FIREBAT_SCORE + Settings.FIREBAT_SCORE_INCREASE_LEVEL3;
         }
         updateScoreLabel();
     }

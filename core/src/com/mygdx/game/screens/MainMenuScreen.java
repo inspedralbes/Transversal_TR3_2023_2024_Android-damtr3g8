@@ -41,7 +41,6 @@ public class MainMenuScreen implements Screen {
     public MainMenuScreen(Videojoc game) {
         this.game = game;
     }
-
     @Override
     public void show() {
         StretchViewport viewport = new StretchViewport(Settings.GAME_WIDTH, Settings.GAME_HEIGHT);
@@ -60,7 +59,8 @@ public class MainMenuScreen implements Screen {
 
         startGameButton.addListener(new ChangeListener() {
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                game.setScreen(new GameScreen());
+                game.setScreen(new GameScreen(game));
+                loginButton.setDisabled(true);
             }
         });
 

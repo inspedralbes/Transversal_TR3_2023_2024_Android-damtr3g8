@@ -56,7 +56,9 @@ public class FireBatSpawner {
                         Actions.run(() -> {
                             if (isColliding) {
                                 firebat.setAttacking();
-                                knight.hurt();
+                                if(firebat.isAttacking){
+                                    knight.hurt();
+                                };
                             }
                         })
                 ));
@@ -65,8 +67,6 @@ public class FireBatSpawner {
             if (isColliding && knight.isAttacking) {
                 if (knight.stateTime >= knight.attackRightAnimation.getAnimationDuration()/2) {
                     firebat.hurt();
-                    /*score += Settings.FIREBAT_SCORE; // Incrementa la puntuación
-                    Gdx.app.log("Score", "Puntuación actual: " + score);*/
                 }
                 firebat.setDelay(0.08f);
             }
@@ -125,7 +125,6 @@ public class FireBatSpawner {
     }
     public void setDoubleLifeEnabled() {
         this.doubleLifeEnabled = true;
-        System.out.println(doubleLifeEnabled);
     }
     public void setTripleLifeEnabled() {
         this.tripleLifeEnabled = true;
