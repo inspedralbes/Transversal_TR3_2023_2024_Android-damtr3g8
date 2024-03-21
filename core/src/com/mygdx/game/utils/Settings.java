@@ -20,7 +20,6 @@ public class Settings {
     public static final int FIREBAT_HEIGHT = 48;
     public static final int FIREBAT_SPEED = 50;
     public static final float FIREBAT_SPAWNER = 1f;
-
     public static final int FIREBAT_HEALTH = 20;
     public static final int FIREBAT_HEALTH_INCREASE_LEVEL1 = 2;
     public static final int FIREBAT_HEALTH_INCREASE_LEVEL2 = 3;
@@ -32,4 +31,11 @@ public class Settings {
     public static final int FIREBAT_SCORE_INCREASE_LEVEL2 = 10;
     public static final int FIREBAT_SCORE_INCREASE_LEVEL3 = 15;
     public static final float FIREBAT_ATTACK_COOLDOWN = 2f;
+
+
+    public static final int SLIME_WIDTH = 48;
+    public static final int SLIME_HEIGHT = 48;
+    public static final int SLIME_SPEED = 20;
+    public static final float SLIME_SPAWNER = 1f;
+
 }

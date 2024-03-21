@@ -11,21 +11,25 @@ public class AssetManager {
     public static Texture sheetidleright,sheetrunright,sheetattackright,sheethurtright,sheetdeath;
     public static Texture sheetrunfront;
     public static Texture sheetrunback;
+    public static Texture slimeHopSheet;
     public static TextureAtlas flyfirebatAtlas,attackfirebatAtlas,deathfirebatAtlas,hurtfirebatAtlas;
     public static Texture sleepfirebat;
     public static TextureRegion[] firebatFlyingFrames,firebatAttackingFrames,firebatDeathFrames,firebatHurtFrames;
     public static TextureRegion[] idleright,runright,attackright,hurtright,death;
     public static TextureRegion[] runfront;
     public static TextureRegion[] runback;
+    public static TextureRegion[] slimeHop;
     public static Animation<TextureRegion> idlerightanimation,runrightanimation,attackrightanimation,hurtrightanimation,deathanimation;
     public static Animation<TextureRegion> runfrontanimation;
     public static Animation<TextureRegion> runbackanimation;
     public static Animation<TextureRegion> firebatFlyinganimation,firebatAttackinganimation,firebatDeathanimation,firebatHurtanimation;
+    public static Animation<TextureRegion> slimeHopAnimation;
     public static Skin skin;
     public static void load(){
         sheets();
         knight();
         firebat();
+        slime();
         skin = new Skin(Gdx.files.internal("Skin/pixthulhu-ui.json"));
     }
 
@@ -45,6 +49,8 @@ public class AssetManager {
         hurtfirebatAtlas = new TextureAtlas(Gdx.files.internal("Bat/Fire/Hurt/firebathurt.txt"));
         deathfirebatAtlas = new TextureAtlas(Gdx.files.internal("Bat/Fire/Death/firebatdeath.txt"));
         sleepfirebat = new Texture(Gdx.files.internal("Bat/Fire/Sleep/firebatsleep.png"));
+
+        slimeHopSheet = new Texture(Gdx.files.internal("Slime/Hop/hop.png"));
 
     }
     static void knight(){
@@ -146,6 +152,11 @@ public class AssetManager {
             firebatHurtFrames[i] = hurtfirebatAtlas.findRegion("BatFire_Hurt-" + i);
         }
         firebatHurtanimation = new Animation<>(0.12f,firebatHurtFrames);
+    }
+    static void slime(){
+        slimeHop = new TextureRegion[13];
+
+        slimeHopAnimation = new Animation<>(0.08f,slimeHop);
     }
 
     public static void dispose(){
