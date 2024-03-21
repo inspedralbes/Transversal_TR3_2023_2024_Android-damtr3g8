@@ -11,19 +11,19 @@ public class AssetManager {
     public static Texture sheetidleright,sheetrunright,sheetattackright,sheethurtright,sheetdeath;
     public static Texture sheetrunfront;
     public static Texture sheetrunback;
-    public static Texture slimeHopSheet;
+    public static Texture slimeHopSheet,slimeAttackSheet,slimeHurtDeathSheet,slimeIdleSheet;
     public static TextureAtlas flyfirebatAtlas,attackfirebatAtlas,deathfirebatAtlas,hurtfirebatAtlas;
     public static Texture sleepfirebat;
     public static TextureRegion[] firebatFlyingFrames,firebatAttackingFrames,firebatDeathFrames,firebatHurtFrames;
     public static TextureRegion[] idleright,runright,attackright,hurtright,death;
     public static TextureRegion[] runfront;
     public static TextureRegion[] runback;
-    public static TextureRegion[] slimeHop;
+    public static TextureRegion[] slimeHop,slimeAttack,slimeHurt,slimeDeath,slimeIdle;
     public static Animation<TextureRegion> idlerightanimation,runrightanimation,attackrightanimation,hurtrightanimation,deathanimation;
     public static Animation<TextureRegion> runfrontanimation;
     public static Animation<TextureRegion> runbackanimation;
     public static Animation<TextureRegion> firebatFlyinganimation,firebatAttackinganimation,firebatDeathanimation,firebatHurtanimation;
-    public static Animation<TextureRegion> slimeHopAnimation;
+    public static Animation<TextureRegion> slimeHopAnimation,slimeAttackAnimation,slimeHurtAnimation,slimeDeathAnimation,slimeIdleAnimation;
     public static Skin skin;
     public static void load(){
         sheets();
@@ -51,7 +51,9 @@ public class AssetManager {
         sleepfirebat = new Texture(Gdx.files.internal("Bat/Fire/Sleep/firebatsleep.png"));
 
         slimeHopSheet = new Texture(Gdx.files.internal("Slime/Hop/hop.png"));
-
+        slimeAttackSheet = new Texture(Gdx.files.internal("Slime/Attack/attack.png"));
+        slimeHurtDeathSheet = new Texture(Gdx.files.internal("Slime/DeathHurt/deathhurt.png"));
+        slimeIdleSheet = new Texture(Gdx.files.internal("Slime/Idle/idle.png"));
     }
     static void knight(){
         TextureRegion[][] tmpIdle = TextureRegion.split(sheetidleright, 16, 17);
@@ -155,8 +157,36 @@ public class AssetManager {
     }
     static void slime(){
         slimeHop = new TextureRegion[13];
-
+        for (int i = 0; i < slimeHop.length; i++) {
+            slimeHop[i] = new TextureRegion(slimeHopSheet, i * 64, 0, 64, 64);
+        }
         slimeHopAnimation = new Animation<>(0.08f,slimeHop);
+
+        slimeAttack = new TextureRegion[8];
+        for (int i = 0; i < slimeAttack.length; i++) {
+            slimeAttack[i] = new TextureRegion(slimeAttackSheet, i * 64, 0, 64, 64);
+        }
+        slimeAttackAnimation = new Animation<>(0.08f,slimeAttack);
+
+        slimeHurt = new TextureRegion[3];
+        for (int i = 0; i < slimeHurt.length; i++) {
+            slimeHurt[i] = new TextureRegion(slimeHurtDeathSheet, i * 64, 0, 64, 64);
+        }
+        slimeHurtAnimation = new Animation<>(0.28f,slimeHurt);
+
+        slimeDeath = new TextureRegion[9];
+        for (int i = 0; i < slimeDeath.length; i++) {
+            slimeDeath[i] = new TextureRegion(slimeHurtDeathSheet, i * 64, 0, 64, 64);
+        }
+        slimeDeathAnimation = new Animation<>(0.08f,slimeDeath);
+
+        slimeIdle = new TextureRegion[6];
+        for (int i = 0; i < slimeIdle.length; i++) {
+            slimeIdle[i] = new TextureRegion(slimeIdleSheet, i * 64, 0, 64, 64);
+        }
+        slimeIdleAnimation = new Animation<>(0.08f,slimeIdle);
+
+
     }
 
     public static void dispose(){
@@ -172,6 +202,10 @@ public class AssetManager {
         attackfirebatAtlas.dispose();
         deathfirebatAtlas.dispose();
         sleepfirebat.dispose();
+        slimeHopSheet.dispose();
+        slimeAttackSheet.dispose();
+        slimeHurtDeathSheet.dispose();
+        slimeIdleSheet.dispose();
         skin.dispose();
     }
 }

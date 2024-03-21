@@ -160,7 +160,7 @@ public class Knight extends Actor {
                 ));
             }*/
             addAction(Actions.sequence(
-                    Actions.delay(attackRightAnimation .getAnimationDuration()),
+                    Actions.delay(attackRightAnimation.getAnimationDuration()),
                     Actions.run(() -> {
                         //isAnimating = false;
                         isAttacking = false;
@@ -174,7 +174,7 @@ public class Knight extends Actor {
             isAnimating = true;
             isHurting = true;
             stateTime = 0f;
-            this.receiveDamage(Settings.FIREBAT_DAMAGE_PER_ATTACK);
+            this.receiveDamage(Settings.SLIME_DAMAGE_PER_ATTACK);
             addAction(Actions.sequence(
                     Actions.delay(hurtrightAnimation.getAnimationDuration()),
                     Actions.run(() -> {

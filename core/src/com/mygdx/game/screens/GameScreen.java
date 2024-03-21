@@ -28,6 +28,8 @@ import com.mygdx.game.objects.Background;
 import com.mygdx.game.objects.FireBat;
 import com.mygdx.game.objects.FireBatSpawner;
 import com.mygdx.game.objects.Knight;
+import com.mygdx.game.objects.Slime;
+import com.mygdx.game.objects.SlimeSpawner;
 import com.mygdx.game.utils.AppPreferences;
 import com.mygdx.game.utils.Settings;
 
@@ -40,7 +42,8 @@ public class GameScreen implements Screen, BatDeathListener {
     private GlyphLayout textLayoutOver, textLayoutFinalScore;
     private Knight knight;
     private FireBatSpawner firebatSpawner;
-    private float spawnTimer;
+    private SlimeSpawner slimeSpawner;
+    private float spawnFirebatTimer,spawnSlimeTimer;
     private Background background;
     private Skin skin = AssetManager.skin;
     BitmapFont fontTitulo = skin.getFont("title");
@@ -48,11 +51,8 @@ public class GameScreen implements Screen, BatDeathListener {
     private Label scoreLabel;
     private TextButton backButton;
     private int score = Settings.GAME_INITIAL_SCORE;
-    private boolean doubleLifeEnabled = false;
-    private boolean tripleLifeEnabled = false;
-    private boolean quintupleLifeEnabled = false;
-    private boolean gameOver = false;
-    private Table gameOverWindow;
+    private boolean doubleLifeEnabledFireBat = false,tripleLifeEnabledFireBat = false,quintupleLifeEnabledFireBat = false;
+    private boolean doubleLifeEnabledSlime = false,tripleLifeEnabledSlime = false,quintupleLifeEnabledSlime = false;
     AppPreferences preferences = new AppPreferences();
     boolean musicEnabled = preferences.isMusicEnabled();
     float musicVolume = preferences.getMusicVolume();
@@ -81,8 +81,12 @@ public class GameScreen implements Screen, BatDeathListener {
         stage.addActor(scoreLabel);
 
         firebatSpawner = new FireBatSpawner(knight, this);
-        spawnTimer = 0f;
+        spawnFirebatTimer = 0f;
         spawnFirebat();
+
+        slimeSpawner = new SlimeSpawner(knight,this);
+        spawnSlimeTimer = 0f;
+        spawnSlime();
 
         Gdx.input.setInputProcessor(stage);
     }
@@ -101,6 +105,9 @@ public class GameScreen implements Screen, BatDeathListener {
         for (FireBat firebat : firebatSpawner.getFirebats()) {
             firebat.drawBounds(shapeRenderer);
         }
+        for (Slime slime : slimeSpawner.getSlimes()) {
+            slime.drawBounds(shapeRenderer);
+        }
         shapeRenderer.end();
     }
 
@@ -114,12 +121,19 @@ public class GameScreen implements Screen, BatDeathListener {
 
 
         firebatSpawner.update(delta);
+        slimeSpawner.update(delta);
 
         if (!knight.isDeath) {
-            spawnTimer += delta;
-            if (spawnTimer >= Settings.FIREBAT_SPAWNER) {
+            spawnFirebatTimer += delta;
+            if (spawnFirebatTimer >= Settings.FIREBAT_SPAWNER) {
                 spawnFirebat();
-                spawnTimer = 0f;
+                spawnFirebatTimer = 0f;
+            }
+
+            spawnSlimeTimer += delta;
+            if (spawnSlimeTimer >= Settings.SLIME_SPAWNER) {
+                spawnSlime();
+                spawnSlimeTimer = 0f;
             }
         } else {
             textLayoutOver = new GlyphLayout();
@@ -156,7 +170,18 @@ public class GameScreen implements Screen, BatDeathListener {
         for (FireBat firebat : fireBats) {
             stage.addActor(firebat);
         }
-        //Gdx.app.log("Spawn", "Nuevo murciélago creado en: " + startX + ", " + startY);
+    }
+
+    private void spawnSlime() {
+        float startX, startY;
+        startX = MathUtils.randomBoolean() ? -50 : Settings.GAME_WIDTH + 50;
+        startY = MathUtils.random(0, Settings.GAME_HEIGHT);
+
+        Array<Slime> slimes = slimeSpawner.getSlimes();
+        slimeSpawner.spawnSlime(startX, startY);
+        for (Slime slime : slimes) {
+            stage.addActor(slime);
+        }
     }
 
 
@@ -200,26 +225,55 @@ public class GameScreen implements Screen, BatDeathListener {
         if (score >= 0 && score < 100) {
             score += Settings.FIREBAT_SCORE;
         } else if (score >= 100 && score < 300) {
-            if (!doubleLifeEnabled) {
-                doubleLifeEnabled = true;
+            if (!doubleLifeEnabledFireBat) {
+                doubleLifeEnabledFireBat = true;
                 firebatSpawner.setDoubleLifeEnabled();
                 Gdx.app.log("Double Life", "La vida de los siguientes murciélagos se ha duplicado.");
             }
             score += Settings.FIREBAT_SCORE + Settings.FIREBAT_SCORE_INCREASE_LEVEL1;
         } else if (score >= 300 && score < 600) {
-            if (!tripleLifeEnabled) {
-                tripleLifeEnabled = true;
+            if (!tripleLifeEnabledFireBat) {
+                tripleLifeEnabledFireBat = true;
                 firebatSpawner.setTripleLifeEnabled();
                 Gdx.app.log("Triple Life", "La vida de los siguientes murciélagos se ha triplicado.");
             }
             score += Settings.FIREBAT_SCORE + Settings.FIREBAT_SCORE_INCREASE_LEVEL2;
         } else if (score >= 600) {
-            if (!quintupleLifeEnabled) {
-                quintupleLifeEnabled = true;
+            if (!quintupleLifeEnabledFireBat) {
+                quintupleLifeEnabledFireBat = true;
                 firebatSpawner.setQuintupleLifeEnabled();
                 Gdx.app.log("Quintuple Life", "La vida de los siguientes murciélagos se ha quintuplicado.");
             }
             score += Settings.FIREBAT_SCORE + Settings.FIREBAT_SCORE_INCREASE_LEVEL3;
+        }
+        updateScoreLabel();
+    }
+
+    @Override
+    public void onSlimeDeath() {
+        if (score >= 0 && score < 100) {
+            score += Settings.SLIME_SCORE;
+        } else if (score >= 100 && score < 300) {
+            if (!doubleLifeEnabledSlime) {
+                doubleLifeEnabledSlime = true;
+                slimeSpawner.setDoubleLifeEnabled();
+                Gdx.app.log("Double Life", "La vida de los siguientes slimes se ha duplicado.");
+            }
+            score += Settings.SLIME_SCORE + Settings.SLIME_SCORE_INCREASE_LEVEL1;
+        } else if (score >= 300 && score < 600) {
+            if (!tripleLifeEnabledSlime) {
+                tripleLifeEnabledSlime = true;
+                slimeSpawner.setTripleLifeEnabled();
+                Gdx.app.log("Triple Life", "La vida de los siguientes slimes se ha triplicado.");
+            }
+            score += Settings.SLIME_SCORE + Settings.SLIME_SCORE_INCREASE_LEVEL2;
+        } else if (score >= 600) {
+            if (!quintupleLifeEnabledSlime) {
+                quintupleLifeEnabledSlime = true;
+                slimeSpawner.setQuintupleLifeEnabled();
+                Gdx.app.log("Quintuple Life", "La vida de los siguientes slimes se ha quintuplicado.");
+            }
+            score += Settings.SLIME_SCORE + Settings.SLIME_SCORE_INCREASE_LEVEL3;
         }
         updateScoreLabel();
     }
