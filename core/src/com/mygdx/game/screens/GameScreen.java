@@ -25,6 +25,7 @@ import com.mygdx.game.Videojoc;
 import com.mygdx.game.helpers.AssetManager;
 import com.mygdx.game.helpers.BatDeathListener;
 import com.mygdx.game.objects.Background;
+import com.mygdx.game.objects.Coin;
 import com.mygdx.game.objects.FireBat;
 import com.mygdx.game.objects.FireBatSpawner;
 import com.mygdx.game.objects.Knight;
@@ -158,6 +159,7 @@ public class GameScreen implements Screen, BatDeathListener {
         }
         //drawElements();
         handleInput(delta);
+
     }
 
     private void spawnFirebat() {
@@ -221,7 +223,7 @@ public class GameScreen implements Screen, BatDeathListener {
     }
 
     @Override
-    public void onBatDeath() {
+    public void onBatDeath(float x,float y) {
         if (score >= 0 && score < 100) {
             score += Settings.FIREBAT_SCORE;
         } else if (score >= 100 && score < 300) {
@@ -247,10 +249,12 @@ public class GameScreen implements Screen, BatDeathListener {
             score += Settings.FIREBAT_SCORE + Settings.FIREBAT_SCORE_INCREASE_LEVEL3;
         }
         updateScoreLabel();
+
+        handleCoinDrop(x, y);
     }
 
     @Override
-    public void onSlimeDeath() {
+    public void onSlimeDeath(float x,float y) {
         if (score >= 0 && score < 100) {
             score += Settings.SLIME_SCORE;
         } else if (score >= 100 && score < 300) {
@@ -276,10 +280,27 @@ public class GameScreen implements Screen, BatDeathListener {
             score += Settings.SLIME_SCORE + Settings.SLIME_SCORE_INCREASE_LEVEL3;
         }
         updateScoreLabel();
+
+        handleCoinDrop(x, y);
     }
 
     private void updateScoreLabel() {
         scoreLabel.setText("Score: " + score);
+    }
+
+    private void handleCoinDrop(float x, float y) {
+        float probability = 0.2f;
+        float randomValue = MathUtils.random();
+        if (randomValue <= probability) {
+            spawnCoin(x, y);
+        }
+    }
+
+    private void spawnCoin(float x, float y) {
+        Coin coin = new Coin();
+        coin.setPosition(x, y);
+        System.out.println("Moneda spawneada");
+        stage.addActor(coin);
     }
 
     @Override

@@ -75,7 +75,7 @@ public class FireBatSpawner {
                 if (firebat.getDelay() <= 0) {
                     firebat.remove();
                     iterator.remove();
-                    batDeathListener.onBatDeath();
+                    batDeathListener.onBatDeath(firebat.getX(),firebat.getY());
                 }
             }
             if (!isColliding) {

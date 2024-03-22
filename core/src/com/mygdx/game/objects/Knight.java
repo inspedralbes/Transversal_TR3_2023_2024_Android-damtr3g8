@@ -7,12 +7,15 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.helpers.AssetManager;
 import com.mygdx.game.utils.Settings;
 
 public class Knight extends Actor {
     private Vector2 position;
+    private Stage stage;
     private int width, height;
     public boolean isRunningRight, isRunningFront, isRunningBack, isAttacking, isFacingRight, isHurting, isDeath;
     private boolean isAnimating = false;
@@ -79,6 +82,7 @@ public class Knight extends Actor {
         super.act(delta);
         stateTime += delta;
         knight.set(position.x, position.y, width, height);
+        checkCoinCollision();
     }
 
 
@@ -207,6 +211,24 @@ public class Knight extends Actor {
         isRunningBack = false;
     }
 
+    private void checkCoinCollision() {
+        if (stage == null) return;
+        Array<Actor> actors = stage.getActors();
+        for (Actor actor : actors) {
+            if (actor instanceof Coin && this.getBoundingRectangle().overlaps(((Coin) actor).getBoundingRectangle())) {
+                Coin coin = (Coin) actor;
+                collectCoin(coin);
+                coin.collect();
+                break;
+            }
+        }
+    }
+
+    private void collectCoin(Coin coin) {
+        System.out.println("Moneda Recogida");
+        coin.remove();
+    }
+
     public float getX() {
         return position.x;
     }
@@ -233,6 +255,14 @@ public class Knight extends Actor {
 
     public int getMaxHealth() {
         return Settings.KNIGHT_MAX_HEALTH;
+    }
+
+    public Rectangle getBoundingRectangle() {
+        return new Rectangle(getX(), getY(), getWidth(), getHeight());
+    }
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
     }
 
 }

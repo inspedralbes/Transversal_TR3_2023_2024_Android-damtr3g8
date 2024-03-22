@@ -75,7 +75,7 @@ public class SlimeSpawner {
                 if (slime.getDelay() <= 0) {
                     slime.remove();
                     iterator.remove();
-                    batDeathListener.onSlimeDeath();
+                    batDeathListener.onSlimeDeath(slime.getX(),slime.getY());
                 }
             }
             if (!isColliding) {

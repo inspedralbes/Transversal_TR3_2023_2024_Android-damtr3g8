@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 public class AssetManager {
-    public static Texture fondo;
+    public static Texture fondo,coinSheet;
     public static Texture sheetidleright,sheetrunright,sheetattackright,sheethurtright,sheetdeath;
     public static Texture sheetrunfront;
     public static Texture sheetrunback;
@@ -19,22 +19,28 @@ public class AssetManager {
     public static TextureRegion[] runfront;
     public static TextureRegion[] runback;
     public static TextureRegion[] slimeHop,slimeAttack,slimeHurt,slimeDeath,slimeIdle;
+    public static TextureRegion[] coinRegion;
     public static Animation<TextureRegion> idlerightanimation,runrightanimation,attackrightanimation,hurtrightanimation,deathanimation;
     public static Animation<TextureRegion> runfrontanimation;
     public static Animation<TextureRegion> runbackanimation;
     public static Animation<TextureRegion> firebatFlyinganimation,firebatAttackinganimation,firebatDeathanimation,firebatHurtanimation;
     public static Animation<TextureRegion> slimeHopAnimation,slimeAttackAnimation,slimeHurtAnimation,slimeDeathAnimation,slimeIdleAnimation;
+    public static Animation<TextureRegion> coinAnimation;
     public static Skin skin;
     public static void load(){
         sheets();
         knight();
         firebat();
         slime();
+        coins();
         skin = new Skin(Gdx.files.internal("Skin/pixthulhu-ui.json"));
     }
 
+
+
     static void sheets(){
         fondo = new Texture(Gdx.files.internal("Fondo/fondo.png"));
+        coinSheet = new Texture(Gdx.files.internal("Coins/coins.png"));
 
         sheetidleright = new Texture(Gdx.files.internal("Knight/Right/idleright.png"));
         sheetrunright = new Texture(Gdx.files.internal("Knight/Right/runright.png"));
@@ -188,6 +194,13 @@ public class AssetManager {
 
 
     }
+    private static void coins() {
+        coinRegion = new TextureRegion[6];
+        for (int i = 0; i < coinRegion.length; i++) {
+            coinRegion[i] = new TextureRegion(coinSheet, i * 16, 0, 16, 16);
+        }
+        coinAnimation = new Animation<>(0.08f,coinRegion);
+    }
 
     public static void dispose(){
         fondo.dispose();
@@ -206,6 +219,7 @@ public class AssetManager {
         slimeAttackSheet.dispose();
         slimeHurtDeathSheet.dispose();
         slimeIdleSheet.dispose();
+        coinSheet.dispose();
         skin.dispose();
     }
 }

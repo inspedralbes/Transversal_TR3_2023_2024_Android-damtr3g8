@@ -1,6 +1,6 @@
 package com.mygdx.game.helpers;
 
 public interface BatDeathListener {
-    void onBatDeath();
-    void onSlimeDeath();
+    void onBatDeath(float x,float y);
+    void onSlimeDeath(float x,float y);
 }
