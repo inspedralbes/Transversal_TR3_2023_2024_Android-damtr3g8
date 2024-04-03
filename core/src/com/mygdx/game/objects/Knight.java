@@ -23,6 +23,7 @@ public class Knight extends Actor {
     public Animation<TextureRegion> idleAnimation, runRightAnimation, attackRightAnimation, hurtrightAnimation, runFrontAnimation, runBackAnimation, deathAnimation;
     public float stateTime;
     public int health = Settings.KNIGHT_HEALTH;
+    Inventory inventory = new Inventory();
 
     public Knight(float x, float y, int width, int height) {
         this.width = width;

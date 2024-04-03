@@ -29,6 +29,7 @@ import com.mygdx.game.objects.Background;
 import com.mygdx.game.objects.Coin;
 import com.mygdx.game.objects.FireBat;
 import com.mygdx.game.objects.FireBatSpawner;
+import com.mygdx.game.objects.Inventory;
 import com.mygdx.game.objects.Knight;
 import com.mygdx.game.objects.RedPotion;
 import com.mygdx.game.objects.Slime;
@@ -46,6 +47,7 @@ public class GameScreen implements Screen, BatDeathListener {
     private Knight knight;
     private FireBatSpawner firebatSpawner;
     private SlimeSpawner slimeSpawner;
+    private Inventory inventory;
     private float spawnFirebatTimer,spawnSlimeTimer;
     private Background background;
     private Skin skin = AssetManager.skin;
@@ -66,6 +68,8 @@ public class GameScreen implements Screen, BatDeathListener {
             AssetManager.music.play();
         }*/
         this.game = game;
+        this.inventory = new Inventory();
+
         shapeRenderer = new ShapeRenderer();
         camera = new OrthographicCamera(Settings.GAME_WIDTH, Settings.GAME_HEIGHT);
         StretchViewport viewport = new StretchViewport(Settings.GAME_WIDTH, Settings.GAME_HEIGHT, camera);
@@ -199,6 +203,10 @@ public class GameScreen implements Screen, BatDeathListener {
         if (Gdx.input.isKeyPressed(Input.Keys.E)) {
             knight.attack();
         }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
+            game.setScreen(new InventoryScreen(game,inventory,this));
+        }
     }
 
     @Override
@@ -271,13 +279,8 @@ public class GameScreen implements Screen, BatDeathListener {
     }
 
     private void handleCoinDrop(float x, float y) {
-        if (isActorPresent(Coin.class)) {
-            return; // Si ya hay una poción, no generes otra
-        }
-
         float probability = Settings.COIN_SPAWN;
         float randomValue = MathUtils.random();
-        System.out.println("Moneda "+randomValue);
         if (randomValue <= probability) {
             spawnCoin(x, y);
         }
@@ -286,18 +289,12 @@ public class GameScreen implements Screen, BatDeathListener {
     private void spawnCoin(float x, float y) {
         Coin coin = new Coin();
         coin.setPosition(x, y);
-        System.out.println("Moneda spawneada");
         stage.addActor(coin);
     }
 
     private void handleRedPotionDrop(float x, float y) {
-        if (isActorPresent(RedPotion.class)) {
-            return; // Si ya hay una poción, no generes otra
-        }
-
         float probability = Settings.FULLPOTION_SPAWN;
         float randomValue = MathUtils.random();
-        System.out.println("Pocion "+randomValue);
         if (randomValue <= probability) {
             spawnPotion(x, y);
         }
@@ -306,18 +303,15 @@ public class GameScreen implements Screen, BatDeathListener {
     private void spawnPotion(float x, float y) {
         RedPotion potion = new RedPotion();
         potion.setPosition(x, y);
-        System.out.println("Pocion spawneada");
         stage.addActor(potion);
     }
 
-    private boolean isActorPresent(Class<?> actorType) {
-        Array<Actor> actors = stage.getActors();
-        for (Actor actor : actors) {
-            if (actor.getClass().equals(actorType)) {
-                return true; // Actor de ese tipo presente
-            }
-        }
-        return false; // No hay actor de ese tipo presente
+    public void pauseGame() {
+        Gdx.input.setInputProcessor(null); // Disable input processing when the game is paused
+    }
+
+    public void resumeGame() {
+        Gdx.input.setInputProcessor(stage); // Enable input processing when the game is resumed
     }
 
     @Override
