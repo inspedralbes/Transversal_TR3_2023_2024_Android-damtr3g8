@@ -46,4 +46,8 @@ public class Settings {
     public static final int SLIME_SCORE_INCREASE_LEVEL2 = 8;
     public static final int SLIME_SCORE_INCREASE_LEVEL3 = 12;
 
+    public static final float COIN_SPAWN = 0.2f;
+    public static final float FULLPOTION_SPAWN = 0.12f;
+    public static final int FULLPOTION_HEALTH = 100;
+
 }

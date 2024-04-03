@@ -83,6 +83,7 @@ public class Knight extends Actor {
         stateTime += delta;
         knight.set(position.x, position.y, width, height);
         checkCoinCollision();
+        checkPotionCollision();
     }
 
 
@@ -229,6 +230,32 @@ public class Knight extends Actor {
         coin.remove();
     }
 
+    private void checkPotionCollision() {
+        if (stage == null) return;
+        Array<Actor> actors = stage.getActors();
+        for (Actor actor : actors) {
+            if (actor instanceof RedPotion && this.getBoundingRectangle().overlaps(((RedPotion) actor).getBoundingRectangle())) {
+                RedPotion potion = (RedPotion) actor;
+                collectPotion(potion);
+                potion.collect();
+                break;
+            }
+        }
+    }
+
+    private void collectPotion(RedPotion potion) {
+        System.out.println("Poción Recogida");
+        int maxHealth = getMaxHealth();
+        int currentHealth = getHealth();
+        int newHealth = currentHealth + Settings.FULLPOTION_HEALTH;
+        if (newHealth > maxHealth) {
+            newHealth = maxHealth;
+        }
+        setHealth(newHealth);
+
+        potion.remove();
+    }
+
     public float getX() {
         return position.x;
     }
@@ -252,6 +279,15 @@ public class Knight extends Actor {
     public int getHealth() {
         return health;
     }
+    public void setHealth(int newHealth) {
+        if (newHealth > 0) {
+            health = newHealth;
+        } else {
+            health = 0;
+            death();
+        }
+    }
+
 
     public int getMaxHealth() {
         return Settings.KNIGHT_MAX_HEALTH;

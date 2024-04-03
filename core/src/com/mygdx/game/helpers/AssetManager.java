@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 public class AssetManager {
-    public static Texture fondo,coinSheet;
+    public static Texture fondo,coinSheet,redpotionsheet;
     public static Texture sheetidleright,sheetrunright,sheetattackright,sheethurtright,sheetdeath;
     public static Texture sheetrunfront;
     public static Texture sheetrunback;
@@ -19,13 +19,13 @@ public class AssetManager {
     public static TextureRegion[] runfront;
     public static TextureRegion[] runback;
     public static TextureRegion[] slimeHop,slimeAttack,slimeHurt,slimeDeath,slimeIdle;
-    public static TextureRegion[] coinRegion;
+    public static TextureRegion[] coinRegion,fullredpotion;
     public static Animation<TextureRegion> idlerightanimation,runrightanimation,attackrightanimation,hurtrightanimation,deathanimation;
     public static Animation<TextureRegion> runfrontanimation;
     public static Animation<TextureRegion> runbackanimation;
     public static Animation<TextureRegion> firebatFlyinganimation,firebatAttackinganimation,firebatDeathanimation,firebatHurtanimation;
     public static Animation<TextureRegion> slimeHopAnimation,slimeAttackAnimation,slimeHurtAnimation,slimeDeathAnimation,slimeIdleAnimation;
-    public static Animation<TextureRegion> coinAnimation;
+    public static Animation<TextureRegion> coinAnimation,fullredpotionAnimation;
     public static Skin skin;
     public static void load(){
         sheets();
@@ -33,6 +33,7 @@ public class AssetManager {
         firebat();
         slime();
         coins();
+        potions();
         skin = new Skin(Gdx.files.internal("Skin/pixthulhu-ui.json"));
     }
 
@@ -41,6 +42,7 @@ public class AssetManager {
     static void sheets(){
         fondo = new Texture(Gdx.files.internal("Fondo/fondo.png"));
         coinSheet = new Texture(Gdx.files.internal("Coins/coins.png"));
+        redpotionsheet = new Texture(Gdx.files.internal("Potions/redpotionsheet.png"));
 
         sheetidleright = new Texture(Gdx.files.internal("Knight/Right/idleright.png"));
         sheetrunright = new Texture(Gdx.files.internal("Knight/Right/runright.png"));
@@ -188,19 +190,28 @@ public class AssetManager {
 
         slimeIdle = new TextureRegion[6];
         for (int i = 0; i < slimeIdle.length; i++) {
-            slimeIdle[i] = new TextureRegion(slimeIdleSheet, i * 64, 0, 64, 64);
+            slimeIdle[i] = new TextureRegion(slimeIdleSheet, i * 16, 0, 16, 16);
         }
-        slimeIdleAnimation = new Animation<>(0.08f,slimeIdle);
+        slimeIdleAnimation = new Animation<>(0.18f,slimeIdle);
 
 
     }
-    private static void coins() {
+    static void coins() {
         coinRegion = new TextureRegion[6];
         for (int i = 0; i < coinRegion.length; i++) {
             coinRegion[i] = new TextureRegion(coinSheet, i * 16, 0, 16, 16);
         }
         coinAnimation = new Animation<>(0.08f,coinRegion);
     }
+
+    static void potions(){
+        fullredpotion = new TextureRegion[8];
+        for (int i = 0; i < fullredpotion.length; i++){
+            fullredpotion[i] = new TextureRegion(redpotionsheet,i*16,0,16,16);
+        }
+        fullredpotionAnimation = new Animation<>(0.08f,fullredpotion);
+    }
+
 
     public static void dispose(){
         fondo.dispose();
