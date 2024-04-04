@@ -23,11 +23,12 @@ public class Knight extends Actor {
     public Animation<TextureRegion> idleAnimation, runRightAnimation, attackRightAnimation, hurtrightAnimation, runFrontAnimation, runBackAnimation, deathAnimation;
     public float stateTime;
     public int health = Settings.KNIGHT_HEALTH;
-    Inventory inventory = new Inventory();
+    Inventory inventory;
 
-    public Knight(float x, float y, int width, int height) {
+    public Knight(float x, float y, int width, int height,Inventory inventory) {
         this.width = width;
         this.height = height;
+        this.inventory = inventory;
         position = new Vector2(x, y);
         isFacingRight = true;
         knight = new Rectangle();
@@ -228,6 +229,7 @@ public class Knight extends Actor {
 
     private void collectCoin(Coin coin) {
         System.out.println("Moneda Recogida");
+        inventory.addItem(new Item("Moneda","Objeto para comprar cosas de la tienda",AssetManager.cointexture,1));
         coin.remove();
     }
 
@@ -246,14 +248,14 @@ public class Knight extends Actor {
 
     private void collectPotion(RedPotion potion) {
         System.out.println("Poción Recogida");
-        int maxHealth = getMaxHealth();
+        /*int maxHealth = getMaxHealth();
         int currentHealth = getHealth();
         int newHealth = currentHealth + Settings.FULLPOTION_HEALTH;
         if (newHealth > maxHealth) {
             newHealth = maxHealth;
         }
-        setHealth(newHealth);
-
+        setHealth(newHealth);*/
+        inventory.addItem(new Item("Pocion de cura","Cura 100 de vida",AssetManager.redpotiontexture,1));
         potion.remove();
     }
 

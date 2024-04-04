@@ -31,7 +31,7 @@ public class RedPotion extends Actor {
         stateTime += delta;
         despawnTimer += delta;
         if (despawnTimer >= 10 && !collected) {
-            System.out.println("Moneda no recogida y despawneada");
+            System.out.println("Pocion no recogida y despawneada");
             remove();
         }
     }

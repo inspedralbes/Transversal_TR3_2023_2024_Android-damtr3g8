@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.Videojoc;
 import com.mygdx.game.helpers.AssetManager;
@@ -48,30 +50,43 @@ public class InventoryScreen implements Screen {
         stage.addActor(table);
 
         Window window = new Window("Inventory", skin); // Use window style from skin
-        window.setSize(320, 800); // Set window size to 320x800 pixels
+        window.setSize(840, 380); // Set window size to 320x800 pixels
         table.add(window);
 
+        Array<TextButton> boxes = new Array<>(); // Array to keep track of created boxes
+
+        // Create and add boxes to the window
         for (int row = 0; row < 4; row++) {
             for (int col = 0; col < 10; col++) {
                 TextButton box = new TextButton("", skin); // Create box button
                 box.setTouchable(Touchable.disabled);
                 window.add(box).size(80, 80).pad(5); // Add box to the window with padding
+                boxes.add(box); // Add the box to the tracking array
             }
             window.row(); // Move to the next row after completing a row
         }
 
-
         // Render inventory items
         for (Item item : inventory.getItems()) {
-            TextButton itemButton = new TextButton("", skin); // Create button for item
-            itemButton.add(new Image(item.getIcon())).size(64, 64); // Add icon to the button
-            window.add(itemButton).size(80, 80).pad(5); // Add button to the window with padding
+            boolean added = false;
+            // Search for an available box
+            for (TextButton box : boxes) {
+                if (box.getChildren().size == 1) {
+                    box.add(new Image(item.getIcon())).size(64, 64); // Add icon to the button
+                    added = true;
+                    break;
+                }
+            }
+            if (!added) {
+                Gdx.app.log("InventoryScreen", "No available box to add item: " + item.getName());
+            }
         }
+
 
         stage.addListener(new InputListener() {
             @Override
             public boolean keyDown(InputEvent event, int keycode) {
-                if (keycode == Input.Keys.O) {
+                if (keycode == Input.Keys.I) {
                     closeInventory();
                     return true;
                 }

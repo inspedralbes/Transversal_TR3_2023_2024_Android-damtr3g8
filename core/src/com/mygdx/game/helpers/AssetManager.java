@@ -13,7 +13,7 @@ public class AssetManager {
     public static Texture sheetrunback;
     public static Texture slimeHopSheet,slimeAttackSheet,slimeHurtDeathSheet,slimeIdleSheet;
     public static TextureAtlas flyfirebatAtlas,attackfirebatAtlas,deathfirebatAtlas,hurtfirebatAtlas;
-    public static Texture sleepfirebat;
+    public static Texture sleepfirebat,redpotiontexture,cointexture;
     public static TextureRegion[] firebatFlyingFrames,firebatAttackingFrames,firebatDeathFrames,firebatHurtFrames;
     public static TextureRegion[] idleright,runright,attackright,hurtright,death;
     public static TextureRegion[] runfront;
@@ -202,6 +202,8 @@ public class AssetManager {
             coinRegion[i] = new TextureRegion(coinSheet, i * 16, 0, 16, 16);
         }
         coinAnimation = new Animation<>(0.08f,coinRegion);
+
+        cointexture = new Texture(Gdx.files.internal("Coins/monedatexture.png"));
     }
 
     static void potions(){
@@ -210,6 +212,8 @@ public class AssetManager {
             fullredpotion[i] = new TextureRegion(redpotionsheet,i*16,0,16,16);
         }
         fullredpotionAnimation = new Animation<>(0.08f,fullredpotion);
+
+        redpotiontexture = new Texture(Gdx.files.internal("Potions/fullredpotiontexture.png"));
     }
 
 

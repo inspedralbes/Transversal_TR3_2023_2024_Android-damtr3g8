@@ -30,6 +30,7 @@ import com.mygdx.game.objects.Coin;
 import com.mygdx.game.objects.FireBat;
 import com.mygdx.game.objects.FireBatSpawner;
 import com.mygdx.game.objects.Inventory;
+import com.mygdx.game.objects.Item;
 import com.mygdx.game.objects.Knight;
 import com.mygdx.game.objects.RedPotion;
 import com.mygdx.game.objects.Slime;
@@ -80,7 +81,7 @@ public class GameScreen implements Screen, BatDeathListener {
         scoreLabel.setPosition(20, 900);
 
         background = new Background(AssetManager.fondo);
-        knight = new Knight(Settings.KNIGHT_STARTX, Settings.KNIGHT_STARTY, Settings.KNIGHT_WIDTH, Settings.KNIGHT_HEIGHT);
+        knight = new Knight(Settings.KNIGHT_STARTX, Settings.KNIGHT_STARTY, Settings.KNIGHT_WIDTH, Settings.KNIGHT_HEIGHT,inventory);
         knight.setName("Knight");
 
         stage.addActor(background);
@@ -96,6 +97,7 @@ public class GameScreen implements Screen, BatDeathListener {
         spawnSlime();
 
         Gdx.input.setInputProcessor(stage);
+
     }
 
     @Override
