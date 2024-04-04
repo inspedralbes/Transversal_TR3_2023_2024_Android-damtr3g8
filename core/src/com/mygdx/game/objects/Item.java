@@ -46,4 +46,7 @@ public class Item {
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
+    public void incrementQuantity(int amount) {
+        quantity += amount;
+    }
 }

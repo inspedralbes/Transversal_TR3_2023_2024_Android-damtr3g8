@@ -72,7 +72,12 @@ public class InventoryScreen implements Screen {
             // Search for an available box
             for (TextButton box : boxes) {
                 if (box.getChildren().size == 1) {
-                    box.add(new Image(item.getIcon())).size(64, 64); // Add icon to the button
+                    Image icon = new Image(item.getIcon());
+                    Label quantityLabel = new Label(String.valueOf(item.getQuantity()), skin); // Create label for item quantity
+                    Table table1 = new Table(); // Create table to hold icon and quantity label
+                    table1.add(icon).size(64, 64); // Add icon to the table
+                    table1.add(quantityLabel).padTop(40); // Add quantity label to the table with padding
+                    box.add(table1).size(80, 80); // Add table to the button with padding
                     added = true;
                     break;
                 }
@@ -80,7 +85,10 @@ public class InventoryScreen implements Screen {
             if (!added) {
                 Gdx.app.log("InventoryScreen", "No available box to add item: " + item.getName());
             }
+
+            System.out.println(item.getName()+","+item.getDescription()+","+item.getQuantity());
         }
+
 
 
         stage.addListener(new InputListener() {

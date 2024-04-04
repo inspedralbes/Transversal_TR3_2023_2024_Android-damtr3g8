@@ -229,7 +229,13 @@ public class Knight extends Actor {
 
     private void collectCoin(Coin coin) {
         System.out.println("Moneda Recogida");
-        inventory.addItem(new Item("Moneda","Objeto para comprar cosas de la tienda",AssetManager.cointexture,1));
+        Item coinItem = new Item("Moneda", "Objeto para comprar cosas de la tienda", AssetManager.cointexture, 3);
+        if (inventory.contains(coinItem)) {
+            Item existingCoinItem = inventory.getItemByName(coinItem.getName());
+            existingCoinItem.incrementQuantity(existingCoinItem.getQuantity());
+        } else {
+            inventory.addItem(coinItem); // Agrega el ítem al inventario si no está presente
+        }
         coin.remove();
     }
 
@@ -255,7 +261,13 @@ public class Knight extends Actor {
             newHealth = maxHealth;
         }
         setHealth(newHealth);*/
-        inventory.addItem(new Item("Pocion de cura","Cura 100 de vida",AssetManager.redpotiontexture,1));
+        Item potionItem = new Item("Pocion de cura", "Cura 100 de vida", AssetManager.redpotiontexture, 1);
+        if (inventory.contains(potionItem)) {
+            Item existingPotionItem = inventory.getItemByName(potionItem.getName());
+            existingPotionItem.incrementQuantity(existingPotionItem.getQuantity());
+        } else {
+            inventory.addItem(potionItem); // Agrega el ítem al inventario si no está presente
+        }
         potion.remove();
     }
 
