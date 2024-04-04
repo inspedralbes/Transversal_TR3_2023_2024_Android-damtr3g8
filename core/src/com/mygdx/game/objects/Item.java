@@ -49,4 +49,12 @@ public class Item {
     public void incrementQuantity(int amount) {
         quantity += amount;
     }
+    public void decreaseQuantity(int amount) {
+        if (amount >= quantity) {
+            quantity = 0;
+        } else {
+            quantity -= amount;
+        }
+    }
+
 }

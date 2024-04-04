@@ -59,7 +59,7 @@ public class InventoryScreen implements Screen {
         for (int row = 0; row < 4; row++) {
             for (int col = 0; col < 10; col++) {
                 TextButton box = new TextButton("", skin); // Create box button
-                box.setTouchable(Touchable.disabled);
+                //box.setTouchable(Touchable.disabled);
                 window.add(box).size(80, 80).pad(5); // Add box to the window with padding
                 boxes.add(box); // Add the box to the tracking array
             }
@@ -75,7 +75,7 @@ public class InventoryScreen implements Screen {
                     Image icon = new Image(item.getIcon());
                     Label quantityLabel = new Label(String.valueOf(item.getQuantity()), skin); // Create label for item quantity
                     Table table1 = new Table(); // Create table to hold icon and quantity label
-                    table1.add(icon).size(64, 64); // Add icon to the table
+                    table1.add(icon).size(64, 64).padLeft(10); // Add icon to the table
                     table1.add(quantityLabel).padTop(40); // Add quantity label to the table with padding
                     box.add(table1).size(80, 80); // Add table to the button with padding
                     added = true;
@@ -88,6 +88,37 @@ public class InventoryScreen implements Screen {
 
             System.out.println(item.getName()+","+item.getDescription()+","+item.getQuantity());
         }
+
+        Window descriptionWindow = new Window("Descripcion", skin);
+        descriptionWindow.setSize(200, 200);
+        table.row();
+        table.add(descriptionWindow).padTop(20);
+
+
+        // Add label for item description
+        Label descriptionLabel = new Label("", skin);
+        descriptionWindow.add(descriptionLabel).pad(10);
+
+        // Listener to update description label when item button is hovered
+        for (int i = 0; i < inventory.getItems().size(); i++) {
+            Item item = inventory.getItems().get(i);
+            TextButton box = boxes.get(i); // Obtener el botón de artículo correspondiente
+            box.addListener(new InputListener() {
+                @Override
+                public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                    if (box.getChildren().size > 0) {
+                        descriptionLabel.setText(item.getName()+", "+item.getDescription()+", cantidad: "+item.getQuantity());
+                    }
+                }
+
+                @Override
+                public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                    descriptionLabel.setText("");
+                }
+            });
+        }
+
+
 
 
 
