@@ -131,13 +131,15 @@ public class GameScreen implements Screen, BatDeathListener {
         slimeSpawner.update(delta);
 
         if (!knight.isDeath) {
+            float adjustedSpawnTimeFirebat = calculateAdjustedSpawnTimeFirebat(score);
             spawnFirebatTimer += delta;
-            if (spawnFirebatTimer >= Settings.FIREBAT_SPAWNER) {
+            if (spawnFirebatTimer >= adjustedSpawnTimeFirebat) {
                 spawnFirebat();
                 spawnFirebatTimer = 0f;
             }
+            float adjustedSpawnTimeSlime = calculateAdjustedSpawnTimeSlime(score);
             spawnSlimeTimer += delta;
-            if (spawnSlimeTimer >= Settings.SLIME_SPAWNER) {
+            if (spawnSlimeTimer >= adjustedSpawnTimeSlime) {
                 spawnSlime();
                 spawnSlimeTimer = 0f;
             }
@@ -177,6 +179,27 @@ public class GameScreen implements Screen, BatDeathListener {
         }
     }
 
+    private float calculateAdjustedSpawnTimeFirebat(int score) {
+        // Calcula el tiempo de spawn ajustado en función de la puntuación
+        float adjustedSpawnTime = Settings.FIREBAT_SPAWNER; // Tiempo de spawn predeterminado
+
+        // Ajusta el tiempo de spawn en función de la puntuación
+        if (score >= 0 && score < 100) {
+            adjustedSpawnTime -= 0f; // Ejemplo de reducción lineal del tiempo de spawn
+        } else if (score >= 100 && score < 300) {
+            adjustedSpawnTime -= 1f;
+        } else if (score >= 300 && score < 600) {
+            adjustedSpawnTime -= 2f;
+        } else if (score >= 600) {
+            adjustedSpawnTime -= 3.5f;
+        }
+
+        // Asegura que el tiempo de spawn ajustado no sea menor que un valor mínimo
+        adjustedSpawnTime = Math.max(adjustedSpawnTime, 1f);
+
+        return adjustedSpawnTime;
+    }
+
     private void spawnSlime() {
         float startX, startY;
         startX = MathUtils.randomBoolean() ? -50 : Settings.GAME_WIDTH + 50;
@@ -187,6 +210,28 @@ public class GameScreen implements Screen, BatDeathListener {
             stage.addActor(slime);
         }
     }
+
+    private float calculateAdjustedSpawnTimeSlime(int score) {
+        // Calcula el tiempo de spawn ajustado en función de la puntuación
+        float adjustedSpawnTime = Settings.SLIME_SPAWNER; // Tiempo de spawn predeterminado
+
+        // Ajusta el tiempo de spawn en función de la puntuación
+        if (score >= 0 && score < 100) {
+            adjustedSpawnTime -= 0f; // Ejemplo de reducción lineal del tiempo de spawn
+        } else if (score >= 100 && score < 300) {
+            adjustedSpawnTime -= 0.5f;
+        } else if (score >= 300 && score < 600) {
+            adjustedSpawnTime -= 1f;
+        } else if (score >= 600) {
+            adjustedSpawnTime -= 1.75f;
+        }
+
+        // Asegura que el tiempo de spawn ajustado no sea menor que un valor mínimo
+        adjustedSpawnTime = Math.max(adjustedSpawnTime, 1f);
+
+        return adjustedSpawnTime;
+    }
+
 
     private void handleInput(float delta) {
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {

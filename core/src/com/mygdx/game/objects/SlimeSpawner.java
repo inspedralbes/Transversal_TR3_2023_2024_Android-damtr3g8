@@ -109,7 +109,6 @@ public class SlimeSpawner {
             slime.act(delta);
         }
 
-
     }
 
     public Array<Slime> getSlimes() {

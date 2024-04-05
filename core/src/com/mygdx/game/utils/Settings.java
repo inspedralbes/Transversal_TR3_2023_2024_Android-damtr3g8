@@ -35,7 +35,7 @@ public class Settings {
     public static final int SLIME_WIDTH = 64;
     public static final int SLIME_HEIGHT = 64;
     public static final int SLIME_SPEED = 20;
-    public static final float SLIME_SPAWNER = 3f;
+    public static float SLIME_SPAWNER = 3f;
     public static final int SLIME_HEALTH = 12;
     public static final int SLIME_HEALTH_INCREASE_LEVEL1 = 2;
     public static final int SLIME_HEALTH_INCREASE_LEVEL2 = 3;
