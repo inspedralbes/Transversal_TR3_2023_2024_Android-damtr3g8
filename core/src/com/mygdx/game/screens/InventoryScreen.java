@@ -9,12 +9,15 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.Videojoc;
@@ -60,7 +63,7 @@ public class InventoryScreen implements Screen {
             for (int col = 0; col < 10; col++) {
                 TextButton box = new TextButton("", skin); // Create box button
                 //box.setTouchable(Touchable.disabled);
-                window.add(box).size(80, 80).pad(5); // Add box to the window with padding
+                window.add(box).size(128, 128).pad(5); // Add box to the window with padding
                 boxes.add(box); // Add the box to the tracking array
             }
             window.row(); // Move to the next row after completing a row
@@ -118,9 +121,18 @@ public class InventoryScreen implements Screen {
             });
         }
 
-
-
-
+        for (int i = 0; i < inventory.getItems().size(); i++) {
+            Item item = inventory.getItems().get(i);
+            TextButton box = boxes.get(i); // Get the corresponding item button
+            box.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    if (box.getChildren().size > 0) {
+                        openItemUsageWindow(item);
+                    }
+                }
+            });
+        }
 
         stage.addListener(new InputListener() {
             @Override
@@ -132,6 +144,78 @@ public class InventoryScreen implements Screen {
                 return false;
             }
         });
+    }
+
+    // Method to open the item usage window
+    private void openItemUsageWindow(Item item) {
+        Window itemUsageWindow = new Window(item.getName() + " Usage", skin); // Create a new window for item usage
+        itemUsageWindow.setSize(600, 400);
+        itemUsageWindow.setPosition((Gdx.graphics.getWidth() - itemUsageWindow.getWidth()) / 2, (Gdx.graphics.getHeight() - itemUsageWindow.getHeight()) / 2);
+
+        // Add buttons for item usage options
+        TextButton useButton = new TextButton("Use", skin);
+        TextButton dropButton = new TextButton("Drop", skin);
+
+        // Add listeners to the buttons
+        useButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                // Implement item usage logic here
+                // For example, you can call a method in the GameScreen to use the item
+                gameScreen.useItem(item);
+                item.decreaseQuantity(1); // Decrease the quantity of the item after use
+                if(item.getQuantity()<1){
+                    inventory.removeItem(item);
+                }
+                closeItemUsageWindow(itemUsageWindow); // Close the item usage window
+            }
+        });
+
+        Slider dropSlider = new Slider(0, item.getQuantity(), 1, false, skin);
+        Label dropLabel = new Label("Number to drop: ", skin);
+        Label dropValueLabel = new Label("", skin);
+        dropValueLabel.setText(String.valueOf((int)dropSlider.getValue()));
+
+        // Listener to update the label text when slider value changes
+        dropSlider.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                dropValueLabel.setText(String.valueOf((int)dropSlider.getValue()));
+            }
+        });
+
+        dropButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                // Implement item drop logic here
+                // For example, you can remove the item from the inventory and update the UI
+                int dropValue = Integer.parseInt(dropValueLabel.getText().toString());
+                item.decreaseQuantity(dropValue);
+                if(item.getQuantity()<1){
+                    inventory.removeItem(item);
+                }
+                closeItemUsageWindow(itemUsageWindow); // Close the item usage window
+            }
+        });
+
+
+        // Add buttons to the window
+        itemUsageWindow.add(useButton).pad(10).row();
+        itemUsageWindow.add(dropButton).pad(10).row();
+
+        // Add slider and label to the window
+        itemUsageWindow.add(dropLabel);
+        itemUsageWindow.add(dropValueLabel).padRight(10).row();
+        itemUsageWindow.add(dropSlider).padBottom(20).row();
+
+        // Add the item usage window to the stage
+        stage.addActor(itemUsageWindow);
+    }
+
+    // Method to close the item usage window
+    private void closeItemUsageWindow(Window itemUsageWindow) {
+        itemUsageWindow.remove(); // Remove the window from the stage
+        closeInventory();
     }
 
     private void closeInventory() {
