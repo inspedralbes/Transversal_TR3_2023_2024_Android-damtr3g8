@@ -357,12 +357,10 @@ public class GameScreen implements Screen, BatDeathListener {
         if (item.getName().equals("Pocion de cura")) {
             int maxHealth = knight.getMaxHealth();
             int currentHealth = knight.getHealth();
-            System.out.println(currentHealth);
             int newHealth = currentHealth + Settings.FULLPOTION_HEALTH;
             if (newHealth > maxHealth) {
                 newHealth = maxHealth;
             }
-            System.out.println(newHealth);
             knight.setHealth(newHealth);
         }
     }

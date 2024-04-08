@@ -33,7 +33,7 @@ public class MainMenuScreen implements Screen {
     AppPreferences preferences = new AppPreferences();
     boolean musicEnabled = preferences.isMusicEnabled();
     float musicVolume = preferences.getMusicVolume();
-    TextButton startGameButton, optionsButton, loginButton, salirButton;
+    TextButton startGameButton, optionsButton,shopButton, loginButton, salirButton;
     Slider volumeMusicSlider, soundMusicSlider;
     CheckBox musicCheckbox, soundCheckbox;
     Label titleLabel, volumeMusicLabel, volumeSoundLabel, musicOnOffLabel, soundOnOffLabel, tituloGame;
@@ -51,10 +51,13 @@ public class MainMenuScreen implements Screen {
 
         startGameButton = new TextButton("Comenzar juego", skin);
         optionsButton = new TextButton("Opciones", skin);
+        shopButton = new TextButton("Tienda",skin);
         loginButton = new TextButton("Login", skin);
+
 
         window.add(startGameButton).width(450).padBottom(20).row();
         window.add(optionsButton).width(450).padBottom(20).row();
+        window.add(shopButton).width(450).row();
         window.add(loginButton).width(450).padBottom(20).row();
 
         startGameButton.addListener(new ChangeListener() {
@@ -139,6 +142,13 @@ public class MainMenuScreen implements Screen {
                 return false;
             }
         });
+        shopButton.addListener(new ChangeListener() {
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                game.setScreen(new ShopScreen(game));
+                loginButton.setDisabled(true);
+            }
+        });
+
 
         salirButton = new TextButton("Salir", skin);
         salirButton.addListener(new ClickListener() {
