@@ -21,6 +21,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.game.Videojoc;
 import com.mygdx.game.helpers.AssetManager;
+import com.mygdx.game.utils.AppPreferences;
 import com.mygdx.game.utils.Settings;
 
 public class ShopScreen implements Screen {
@@ -30,6 +31,7 @@ public class ShopScreen implements Screen {
     private Table objectsTable;
     TextButton buyButton;
     private int costFullRedPotion = 50;
+    private AppPreferences preferences = new AppPreferences();
 
     public ShopScreen(Videojoc game) {
         this.game = game;
@@ -46,27 +48,35 @@ public class ShopScreen implements Screen {
         objectsTable = new Table();
         objectsTable.top().padTop(20).center();
 
+        TextButton exitButton = new TextButton("Salir", skin);
+        exitButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                // Cambiar a la pantalla del menú principal
+                game.setScreen(new MainMenuScreen(game));
+            }
+        });
+        objectsTable.add(exitButton).left().padBottom(20);
         Label titleLabel = new Label("Shop", skin);
-
-        objectsTable.add(titleLabel).colspan(3).center().padBottom(20).row();
+        objectsTable.add(titleLabel).left().padBottom(20).row();
 
         // Crear el ScrollPane con la tabla de objetos
         ScrollPane scrollPane = new ScrollPane(objectsTable, skin);
         scrollPane.setFillParent(true);
         scrollPane.setScrollingDisabled(true, false);
 
-        /*for (int row = 0; row < 4; row++) {
-            for (int col = 0; col < 3; col++) {
+        /*for (int row = 0; row < 3; row++) {
+            for (int col = 0; col < 2; col++) {
                 Window window = new Window("", skin);
                 window.pad(10);
-                objectsTable.add(window).size(400, 200).padRight(30);
+                objectsTable.add(window).size(520, 270).padRight(30);
             }
             objectsTable.row(); // Move to the next row after completing a row
         }*/
 
         Window window = new Window("", skin);
         window.pad(10);
-        objectsTable.add(window).size(500, 250).padRight(30);
+        objectsTable.add(window).size(520, 270).padRight(30);
 
         // Añadir el nombre del objeto
         Label nameLabel = new Label("Pocion de cura lleno", skin);
@@ -85,10 +95,10 @@ public class ShopScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 // Disminuir la cantidad
-                int quantity = Integer.parseInt(quantityLabel.getText().toString());
+                 int quantity = Integer.parseInt(quantityLabel.getText().toString());
                 if (quantity > 1) {
                     quantityLabel.setText(String.valueOf(quantity - 1));
-                    updateCost(quantity);
+                    updateCost(quantity-1);
                 }
             }
         });
@@ -99,7 +109,7 @@ public class ShopScreen implements Screen {
                 // Aumentar la cantidad
                 int quantity = Integer.parseInt(quantityLabel.getText().toString());
                 quantityLabel.setText(String.valueOf(quantity + 1));
-                updateCost(quantity);
+                updateCost(quantity+1);
             }
         });
 
@@ -110,8 +120,25 @@ public class ShopScreen implements Screen {
         buyButton = new TextButton("Buy\n" +costFullRedPotion+ " coins", skin);
         buyButton.pad(10).center();
         window.add(buyButton).colspan(3).center();
-
+        buyButton.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                int currentCoins = preferences.getCoinsCollected();
+                int totalCost = costFullRedPotion * Integer.parseInt(quantityLabel.getText().toString());
+                if (currentCoins >= totalCost) {
+                    currentCoins -= totalCost;
+                    preferences.setCoinsCollected(currentCoins);
+                    // Aquí puedes agregar cualquier otra lógica relacionada con la compra,
+                    // como agregar el objeto comprado al inventario del jugador, etc.
+                    return true;
+                } else {
+                    System.out.println("No tienes suficientes monedas para comprar este objeto.");
+                    return false;
+                }
+            }
+        });
         stage.addActor(scrollPane);
+
     }
 
     @Override
