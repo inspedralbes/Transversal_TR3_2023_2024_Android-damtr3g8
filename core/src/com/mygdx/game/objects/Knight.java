@@ -25,6 +25,8 @@ public class Knight extends Actor {
     public float stateTime;
     public int health = Settings.KNIGHT_HEALTH;
     Inventory inventory;
+    private int monedas;
+    private AppPreferences preferences = new AppPreferences();
 
     public Knight(float x, float y, int width, int height,Inventory inventory) {
         this.width = width;
@@ -40,6 +42,7 @@ public class Knight extends Actor {
         deathAnimation = AssetManager.deathanimation;
         runFrontAnimation = AssetManager.runfrontanimation;
         runBackAnimation = AssetManager.runbackanimation;
+        monedas = preferences.getCoinsCollected();
     }
 
     @Override
@@ -131,28 +134,6 @@ public class Knight extends Actor {
             isRunningFront = true;
         }
     }
-
-    public void moverArribaIzquierda(float delta) {
-        moverArriba(delta);
-        moverIzquierda(delta);
-    }
-
-    public void moverArribaDerecha(float delta) {
-        moverArriba(delta);
-        moverDerecha(delta);
-    }
-
-    public void moverAbajoIzquierda(float delta) {
-        moverAbajo(delta);
-        moverIzquierda(delta);
-    }
-
-    public void moverAbajoDerecha(float delta) {
-        moverAbajo(delta);
-        moverDerecha(delta);
-    }
-
-
     public void attack() {
         if (!isAttacking) {
             //isAnimating = true;
@@ -230,6 +211,9 @@ public class Knight extends Actor {
 
     private void collectCoin(Coin coin) {
         System.out.println("Moneda Recogida");
+        monedas+=3;
+        preferences.setCoinsCollected(monedas);
+        System.out.println("Monedas totales del juego: "+monedas);
         Item coinItem = new Item("Moneda", "Objeto para comprar cosas de la tienda", AssetManager.cointexture, 3);
         if (inventory.contains(coinItem)) {
             Item existingCoinItem = inventory.getItemByName(coinItem.getName());

@@ -28,6 +28,8 @@ public class ShopScreen implements Screen {
     private Skin skin;
     private Videojoc game;
     private Table objectsTable;
+    TextButton buyButton;
+    private int costFullRedPotion = 50;
 
     public ShopScreen(Videojoc game) {
         this.game = game;
@@ -64,7 +66,7 @@ public class ShopScreen implements Screen {
 
         Window window = new Window("", skin);
         window.pad(10);
-        objectsTable.add(window).size(400, 200).padRight(30);
+        objectsTable.add(window).size(500, 250).padRight(30);
 
         // Añadir el nombre del objeto
         Label nameLabel = new Label("Pocion de cura lleno", skin);
@@ -86,6 +88,7 @@ public class ShopScreen implements Screen {
                 int quantity = Integer.parseInt(quantityLabel.getText().toString());
                 if (quantity > 1) {
                     quantityLabel.setText(String.valueOf(quantity - 1));
+                    updateCost(quantity);
                 }
             }
         });
@@ -96,6 +99,7 @@ public class ShopScreen implements Screen {
                 // Aumentar la cantidad
                 int quantity = Integer.parseInt(quantityLabel.getText().toString());
                 quantityLabel.setText(String.valueOf(quantity + 1));
+                updateCost(quantity);
             }
         });
 
@@ -103,7 +107,7 @@ public class ShopScreen implements Screen {
         window.add(quantityLabel).pad(10).center();
         window.add(plusButton).right().padRight(30);
 
-        TextButton buyButton = new TextButton("Buy", skin);
+        buyButton = new TextButton("Buy\n" +costFullRedPotion+ " coins", skin);
         buyButton.pad(10).center();
         window.add(buyButton).colspan(3).center();
 
@@ -116,6 +120,11 @@ public class ShopScreen implements Screen {
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
     }
+    public void updateCost(int quantity) {
+        int totalCost = costFullRedPotion * quantity;
+        buyButton.setText("Buy\n" + totalCost + " coins");
+    }
+
 
     @Override
     public void resize(int width, int height) {

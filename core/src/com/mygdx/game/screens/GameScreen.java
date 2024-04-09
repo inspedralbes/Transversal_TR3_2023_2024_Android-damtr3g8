@@ -96,6 +96,9 @@ public class GameScreen implements Screen, BatDeathListener {
         spawnSlimeTimer = 0f;
         spawnSlime();
 
+        Item coinsItem = new Item("Moneda", "Objeto para comprar cosas de la tienda", AssetManager.cointexture, getMonedas());
+        inventory.addItem(coinsItem);
+
         Gdx.input.setInputProcessor(stage);
 
     }
@@ -399,4 +402,7 @@ public class GameScreen implements Screen, BatDeathListener {
         AssetManager.dispose();
     }
 
+    public int getMonedas() {
+        return preferences.getCoinsCollected();
+    }
 }
