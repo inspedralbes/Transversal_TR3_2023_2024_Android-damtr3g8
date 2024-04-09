@@ -23,7 +23,7 @@ public class Inventory {
     }*/
 
     public void addItem(Item item) {
-        if (item.getName().equals("Pocion de cura")) {
+        if (item.getName().equals("Pocion de cura lleno")) {
             for (Item existingItem : items) {
                 if (existingItem.getName().equals(item.getName())) {
                     if (existingItem.getQuantity() < 32) {
@@ -37,7 +37,7 @@ public class Inventory {
             // Si quedó algo de cantidad después de llenar los stacks existentes, agregamos nuevos stacks
             while (item.getQuantity() > 0) {
                 int quantityToAdd = Math.min(32, item.getQuantity());
-                Item newItem = new Item("Pocion de cura", "Cura 100 de vida", AssetManager.redpotiontexture, quantityToAdd);
+                Item newItem = new Item("Pocion de cura lleno", "Cura 100 de vida", AssetManager.redpotiontexture, quantityToAdd);
                 items.add(newItem);
                 item.decreaseQuantity(quantityToAdd);
             }

@@ -8,6 +8,7 @@ public class AppPreferences {
     private static final String PREF_MUSIC_ENABLED = "music.enabled";
     private static final String PREF_SOUND_ENABLED = "sound.enabled";
     private static final String PREF_SOUND_VOL = "sound";
+    private static final String PREF_COINS_COLLECTED = "coins.collected";
     private static final String PREFS_NAME = "Videojoc";
 
     protected Preferences getPrefs() {
@@ -48,5 +49,14 @@ public class AppPreferences {
     public void setSoundVolume(float volume) {
         getPrefs().putFloat(PREF_SOUND_VOL, volume);
         getPrefs().flush();
+    }
+    public void setCoinsCollected(int coinsCollected) {
+        getPrefs().putInteger(PREF_COINS_COLLECTED, coinsCollected);
+        getPrefs().flush();
+    }
+
+    // Nuevo método para cargar la cantidad de monedas recolectadas
+    public int getCoinsCollected() {
+        return getPrefs().getInteger(PREF_COINS_COLLECTED, 0);
     }
 }

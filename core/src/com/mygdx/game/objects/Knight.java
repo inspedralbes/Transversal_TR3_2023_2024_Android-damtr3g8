@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.helpers.AssetManager;
+import com.mygdx.game.utils.AppPreferences;
 import com.mygdx.game.utils.Settings;
 
 public class Knight extends Actor {
@@ -261,7 +262,7 @@ public class Knight extends Actor {
             newHealth = maxHealth;
         }
         setHealth(newHealth);*/
-        Item potionItem = new Item("Pocion de cura", "Cura 100 de vida", AssetManager.redpotiontexture, 1);
+        Item potionItem = new Item("Pocion de cura lleno", "Cura 100 de vida", AssetManager.redpotiontexture, 1);
         if (inventory.contains(potionItem)) {
             Item existingPotionItem = inventory.getItemByName(potionItem.getName());
             existingPotionItem.incrementQuantity(existingPotionItem.getQuantity());
