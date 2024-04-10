@@ -19,6 +19,9 @@ public class Slime extends Actor {
     public boolean isAttacking, HopingRight, isHurt, isDeath, isHoping, canMoveAfterDamage;
     float delay;
     private int health = Settings.SLIME_HEALTH;
+    private boolean isForceActive = false;
+    private float forceDuration = 0f;
+    private float originalDamageMultiplier = 1.0f; // Multiplicador de daño original
 
     public Slime() {
         hopanimation = AssetManager.slimeHopAnimation;
@@ -97,7 +100,18 @@ public class Slime extends Actor {
         }
     }
 
+    public void applyAttack(float duration) {
+        isForceActive = true;
+        forceDuration = duration;
+        // Guardar el multiplicador de daño original
+        originalDamageMultiplier = 1.0f;
+    }
+
     public void receiveDamage(int damage) {
+        if (isForceActive) {
+            // Aplicar reducción de daño
+            damage *= 1.8f; // Reducir el daño en un 65%
+        }
         health -= damage;
         System.out.println("Slime Health: " + health);
         if (health <= 0) {

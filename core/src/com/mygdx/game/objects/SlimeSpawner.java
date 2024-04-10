@@ -111,6 +111,12 @@ public class SlimeSpawner {
 
     }
 
+    public void applyAttack(float duration){
+        for (Slime slime : slimes) {
+            slime.applyAttack(duration);
+        }
+    }
+
     public Array<Slime> getSlimes() {
         return slimes;
     }

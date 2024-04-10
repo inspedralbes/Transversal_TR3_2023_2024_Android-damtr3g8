@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -20,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.game.Videojoc;
 import com.mygdx.game.helpers.AssetManager;
 import com.mygdx.game.objects.Inventory;
@@ -51,6 +53,7 @@ import com.mygdx.game.Videojoc;
 import com.mygdx.game.helpers.AssetManager;
 import com.mygdx.game.objects.Inventory;
 import com.mygdx.game.objects.Item;
+import com.mygdx.game.utils.Settings;
 
 import javax.swing.Box;
 
@@ -60,6 +63,7 @@ public class InventoryScreen implements Screen {
     private Inventory inventory;
     private Videojoc game;
     private GameScreen gameScreen;
+    OrthographicCamera camera;
 
     public InventoryScreen(Videojoc game, Inventory inventory,GameScreen gameScreen) {
         this.game = game;
@@ -70,7 +74,8 @@ public class InventoryScreen implements Screen {
     @Override
     public void show() {
         gameScreen.pauseGame();
-        stage = new Stage(new ScreenViewport());
+        camera = new OrthographicCamera(Settings.GAME_WIDTH, Settings.GAME_HEIGHT);
+        stage = new Stage(new StretchViewport(Settings.GAME_WIDTH, Settings.GAME_HEIGHT,camera));
         Gdx.input.setInputProcessor(stage);
 
         skin = AssetManager.skin;
@@ -90,7 +95,7 @@ public class InventoryScreen implements Screen {
             for (int col = 0; col < 10; col++) {
                 TextButton box = new TextButton("", skin); // Create box button
                 //box.setTouchable(Touchable.disabled);
-                window.add(box).size(128, 128).pad(5); // Add box to the window with padding
+                window.add(box).size(115, 115).pad(5); // Add box to the window with padding
                 boxes.add(box); // Add the box to the tracking array
             }
             window.row(); // Move to the next row after completing a row
@@ -178,7 +183,7 @@ public class InventoryScreen implements Screen {
     private void openItemUsageWindow(Item item) {
         Window itemUsageWindow = new Window(item.getName() + " Usage", skin); // Create a new window for item usage
         itemUsageWindow.setSize(600, 400);
-        itemUsageWindow.setPosition((Gdx.graphics.getWidth() - itemUsageWindow.getWidth()) / 2, (Gdx.graphics.getHeight() - itemUsageWindow.getHeight()) / 2);
+        itemUsageWindow.setPosition((Settings.GAME_WIDTH - itemUsageWindow.getWidth()) / 2, (Settings.GAME_HEIGHT - itemUsageWindow.getHeight()) / 2);
 
         // Add buttons for item usage options
         TextButton useButton = new TextButton("Use", skin);

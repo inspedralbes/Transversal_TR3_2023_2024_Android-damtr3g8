@@ -41,6 +41,96 @@ public class Inventory {
                 items.add(newItem);
                 item.decreaseQuantity(quantityToAdd);
             }
+        } else if (item.getName().equals("Pocion de cura medio")) {
+            for (Item existingItem : items) {
+                if (existingItem.getName().equals(item.getName())) {
+                    if (existingItem.getQuantity() < 32) {
+                        int spaceLeft = 32 - existingItem.getQuantity();
+                        int quantityToAdd = Math.min(spaceLeft, item.getQuantity());
+                        existingItem.incrementQuantity(quantityToAdd);
+                        item.decreaseQuantity(quantityToAdd);
+                    }
+                }
+            }
+            // Si quedó algo de cantidad después de llenar los stacks existentes, agregamos nuevos stacks
+            while (item.getQuantity() > 0) {
+                int quantityToAdd = Math.min(32, item.getQuantity());
+                Item newItem = new Item("Pocion de cura medio", "Cura 50 de vida", AssetManager.halfredpotiontexture, quantityToAdd);
+                items.add(newItem);
+                item.decreaseQuantity(quantityToAdd);
+            }
+        } else if (item.getName().equals("Pocion de cura cuarto")) {
+            for (Item existingItem : items) {
+                if (existingItem.getName().equals(item.getName())) {
+                    if (existingItem.getQuantity() < 32) {
+                        int spaceLeft = 32 - existingItem.getQuantity();
+                        int quantityToAdd = Math.min(spaceLeft, item.getQuantity());
+                        existingItem.incrementQuantity(quantityToAdd);
+                        item.decreaseQuantity(quantityToAdd);
+                    }
+                }
+            }
+            // Si quedó algo de cantidad después de llenar los stacks existentes, agregamos nuevos stacks
+            while (item.getQuantity() > 0) {
+                int quantityToAdd = Math.min(32, item.getQuantity());
+                Item newItem = new Item("Pocion de cura cuarto", "Cura 25 de vida", AssetManager.quarterredpotiontexture, quantityToAdd);
+                items.add(newItem);
+                item.decreaseQuantity(quantityToAdd);
+            }
+        } else if (item.getName().equals("Pocion de fuerza")) {
+            for (Item existingItem : items) {
+                if (existingItem.getName().equals(item.getName())) {
+                    if (existingItem.getQuantity() < 32) {
+                        int spaceLeft = 32 - existingItem.getQuantity();
+                        int quantityToAdd = Math.min(spaceLeft, item.getQuantity());
+                        existingItem.incrementQuantity(quantityToAdd);
+                        item.decreaseQuantity(quantityToAdd);
+                    }
+                }
+            }
+            // Si quedó algo de cantidad después de llenar los stacks existentes, agregamos nuevos stacks
+            while (item.getQuantity() > 0) {
+                int quantityToAdd = Math.min(32, item.getQuantity());
+                Item newItem = new Item("Pocion de fuerza", "Augmenta un 80% la fuerza durante 5 segundos", AssetManager.purplepotiontexture, quantityToAdd);
+                items.add(newItem);
+                item.decreaseQuantity(quantityToAdd);
+            }
+        } else if (item.getName().equals("Pocion de resistencia")) {
+            for (Item existingItem : items) {
+                if (existingItem.getName().equals(item.getName())) {
+                    if (existingItem.getQuantity() < 32) {
+                        int spaceLeft = 32 - existingItem.getQuantity();
+                        int quantityToAdd = Math.min(spaceLeft, item.getQuantity());
+                        existingItem.incrementQuantity(quantityToAdd);
+                        item.decreaseQuantity(quantityToAdd);
+                    }
+                }
+            }
+            // Si quedó algo de cantidad después de llenar los stacks existentes, agregamos nuevos stacks
+            while (item.getQuantity() > 0) {
+                int quantityToAdd = Math.min(32, item.getQuantity());
+                Item newItem = new Item("Pocion de resistencia", "Augmenta un 65% la resistencia durante 10 segundos", AssetManager.greenpotiontexture, quantityToAdd);
+                items.add(newItem);
+                item.decreaseQuantity(quantityToAdd);
+            }
+        } else if (item.getName().equals("Pocion de velocidad")) {
+            for (Item existingItem : items) {
+                if (existingItem.getName().equals(item.getName())) {
+                    if (existingItem.getQuantity() < 32) {
+                        int spaceLeft = 32 - existingItem.getQuantity();
+                        int quantityToAdd = Math.min(spaceLeft, item.getQuantity());
+                        existingItem.incrementQuantity(quantityToAdd);
+                        item.decreaseQuantity(quantityToAdd);
+                    }
+                }
+            }
+            // Si quedó algo de cantidad después de llenar los stacks existentes, agregamos nuevos stacks
+            while (item.getQuantity() > 0) {
+                int quantityToAdd = Math.min(32, item.getQuantity());
+                Item newItem = new Item("Pocion de velocidad", "Augmenta un 50% la velocidad durante 13 segundos", AssetManager.yellowpotiontexture, quantityToAdd);
+                items.add(newItem);
+                item.decreaseQuantity(quantityToAdd);
+            }
         } else if (item.getName().equals("Moneda")) {
             for (Item existingItem : items) {
                 if (existingItem.getName().equals(item.getName())) {
@@ -51,7 +141,6 @@ public class Inventory {
             items.add(item);
         }
     }
-
 
 
     public void removeItem(Item item) {

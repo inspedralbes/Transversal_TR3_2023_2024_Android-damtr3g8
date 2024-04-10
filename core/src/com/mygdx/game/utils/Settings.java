@@ -10,7 +10,7 @@ public class Settings {
     public static final int KNIGHT_HEIGHT = 64;
     public static final float KNIGHT_STARTY = GAME_WIDTH/2;
     public static final float KNIGHT_STARTX = GAME_HEIGHT/2;
-    public static final int KNIGHT_SPEED = 200;
+    public static float KNIGHT_SPEED = 200;
     public static final int KNIGHT_HEALTH = 250;
     public static final int KNIGHT_MAX_HEALTH = 250;
     public static final int KNIGHT_DAMAGE_PER_ATTACK = 25;

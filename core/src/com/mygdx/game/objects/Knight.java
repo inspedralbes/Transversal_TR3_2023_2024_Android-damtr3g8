@@ -26,6 +26,14 @@ public class Knight extends Actor {
     public int health = Settings.KNIGHT_HEALTH;
     Inventory inventory;
     private int monedas;
+    private boolean isSpeedBoosted = false;
+    private float speedBoostDuration = 0f;
+    private float originalSpeed = Settings.KNIGHT_SPEED;
+    private boolean isResistanceActive = false;
+    private float resistanceDuration = 0f;
+    private float originalDamageMultiplier = 1.0f; // Multiplicador de daño original
+
+
     private AppPreferences preferences = new AppPreferences();
 
     public Knight(float x, float y, int width, int height,Inventory inventory) {
@@ -90,6 +98,15 @@ public class Knight extends Actor {
         knight.set(position.x, position.y, width, height);
         checkCoinCollision();
         checkPotionCollision();
+
+        if (isSpeedBoosted) {
+            speedBoostDuration -= delta;
+            if (speedBoostDuration <= 0) {
+                // Restaurar velocidad original cuando la duración del efecto haya terminado
+                isSpeedBoosted = false;
+                Settings.KNIGHT_SPEED = originalSpeed;
+            }
+        }
     }
 
 
@@ -134,6 +151,14 @@ public class Knight extends Actor {
             isRunningFront = true;
         }
     }
+
+    public void applySpeedBoost(float duration) {
+        isSpeedBoosted = true;
+        speedBoostDuration = duration;
+        // Aumentar la velocidad en un 50%
+        Settings.KNIGHT_SPEED *= 1.5f;
+    }
+
     public void attack() {
         if (!isAttacking) {
             //isAnimating = true;
@@ -174,7 +199,19 @@ public class Knight extends Actor {
         }
     }
 
+    public void applyResistance(float duration) {
+        isResistanceActive = true;
+        resistanceDuration = duration;
+        // Guardar el multiplicador de daño original
+        originalDamageMultiplier = 1.0f;
+    }
+
+
     public void receiveDamage(int damage) {
+        if (isResistanceActive) {
+            // Aplicar reducción de daño
+            damage *= 0.35f; // Reducir el daño en un 65%
+        }
         health -= damage;
         System.out.println("Knight Health: " + health);
         if (health <= 0) {
@@ -239,13 +276,6 @@ public class Knight extends Actor {
 
     private void collectPotion(RedPotion potion) {
         System.out.println("Poción Recogida");
-        /*int maxHealth = getMaxHealth();
-        int currentHealth = getHealth();
-        int newHealth = currentHealth + Settings.FULLPOTION_HEALTH;
-        if (newHealth > maxHealth) {
-            newHealth = maxHealth;
-        }
-        setHealth(newHealth);*/
         Item potionItem = new Item("Pocion de cura lleno", "Cura 100 de vida", AssetManager.fullredpotiontexture, 1);
         if (inventory.contains(potionItem)) {
             Item existingPotionItem = inventory.getItemByName(potionItem.getName());

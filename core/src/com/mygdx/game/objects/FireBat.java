@@ -21,6 +21,10 @@ public class FireBat extends Actor {
     float delay;
     private int health = Settings.FIREBAT_HEALTH;
 
+    private boolean isForceActive = false;
+    private float forceDuration = 0f;
+    private float originalDamageMultiplier = 1.0f; // Multiplicador de daño original
+
     public FireBat() {
         flyanimation = AssetManager.firebatFlyinganimation;
         attackanimation = AssetManager.firebatAttackinganimation;
@@ -98,7 +102,18 @@ public class FireBat extends Actor {
         }
     }
 
+    public void applyAttack(float duration) {
+        isForceActive = true;
+        forceDuration = duration;
+        // Guardar el multiplicador de daño original
+        originalDamageMultiplier = 1.0f;
+    }
+
     public void receiveDamage(int damage) {
+        if (isForceActive) {
+            // Aplicar reducción de daño
+            damage *= 1.8f; // Reducir el daño en un 65%
+        }
         health -= damage;
         System.out.println("Firebat Health: " + health);
         if (health <= 0) {

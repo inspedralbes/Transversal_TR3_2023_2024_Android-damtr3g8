@@ -21,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.game.Videojoc;
 import com.mygdx.game.helpers.AssetManager;
@@ -57,6 +58,9 @@ public class GameScreen implements Screen, BatDeathListener {
     private Label scoreLabel;
     private TextButton backButton;
     private int score = Settings.GAME_INITIAL_SCORE;
+    private int tempAttackIncrease = 0; // Aumento temporal de ataque debido a la poción de fuerza
+    private boolean isPotionOfStrengthActive = false;
+    int attack = Settings.KNIGHT_DAMAGE_PER_ATTACK;
     private boolean doubleLifeEnabledFireBat = false,tripleLifeEnabledFireBat = false,quintupleLifeEnabledFireBat = false;
     private boolean doubleLifeEnabledSlime = false,tripleLifeEnabledSlime = false,quintupleLifeEnabledSlime = false;
     AppPreferences preferences = new AppPreferences();
@@ -97,7 +101,19 @@ public class GameScreen implements Screen, BatDeathListener {
         spawnSlime();
 
         Item coinsItem = new Item("Moneda", "Objeto para comprar cosas de la tienda", AssetManager.cointexture, getMonedas());
+        Item curaLLena = new Item("Pocion de cura lleno", "Cura 100 de vida", AssetManager.fullredpotiontexture, 32);
+        Item curaMedia = new Item("Pocion de cura medio", "Cura 50 de vida", AssetManager.halfredpotiontexture, 32);
+        Item curaCuarto = new Item("Pocion de cura cuarto", "Cura 25 de vida", AssetManager.quarterredpotiontexture, 32);
+        Item fuerza = new Item("Pocion de fuerza", "Augmenta un 80% la fuerza durante 5 segundos", AssetManager.purplepotiontexture, 32);
+        Item resistencia = new Item("Pocion de resistencia", "Augmenta un 65% la resistencia durante 10 segundos", AssetManager.greenpotiontexture, 32);
+        Item velocidad = new Item("Pocion de velocidad", "Augmenta un 50% la velocidad durante 13 segundos", AssetManager.yellowpotiontexture, 64);
         inventory.addItem(coinsItem);
+        inventory.addItem(curaLLena);
+        inventory.addItem(curaMedia);
+        inventory.addItem(curaCuarto);
+        inventory.addItem(fuerza);
+        inventory.addItem(resistencia);
+        inventory.addItem(velocidad);
 
         Gdx.input.setInputProcessor(stage);
 
@@ -365,6 +381,29 @@ public class GameScreen implements Screen, BatDeathListener {
                 newHealth = maxHealth;
             }
             knight.setHealth(newHealth);
+        } else if (item.getName().equals("Pocion de cura medio")) {
+            int maxHealth = knight.getMaxHealth();
+            int currentHealth = knight.getHealth();
+            int newHealth = currentHealth + Settings.HALFPOTION_HEALTH;
+            if (newHealth > maxHealth) {
+                newHealth = maxHealth;
+            }
+            knight.setHealth(newHealth);
+        } else if (item.getName().equals("Pocion de cura cuarto")) {
+            int maxHealth = knight.getMaxHealth();
+            int currentHealth = knight.getHealth();
+            int newHealth = currentHealth + Settings.QUARTERPOTION_HEALTH;
+            if (newHealth > maxHealth) {
+                newHealth = maxHealth;
+            }
+            knight.setHealth(newHealth);
+        } else if (item.getName().equals("Pocion de velocidad")) {
+            knight.applySpeedBoost(13f);
+        } else if (item.getName().equals("Pocion de resistencia")) {
+            knight.applyResistance(10f);
+        } else if (item.getName().equals("Pocion de fuerza")){
+            firebatSpawner.applyAttack(5f);
+            slimeSpawner.applyAttack(5f);
         }
     }
 

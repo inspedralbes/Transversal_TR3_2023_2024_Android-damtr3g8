@@ -111,6 +111,11 @@ public class FireBatSpawner {
 
 
     }
+    public void applyAttack(float duration){
+        for (FireBat fireBat : firebats) {
+            fireBat.applyAttack(duration);
+        }
+    }
 
     public Array<FireBat> getFirebats() {
         return firebats;
