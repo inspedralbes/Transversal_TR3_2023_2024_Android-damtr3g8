@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -29,8 +30,7 @@ public class ShopScreen implements Screen {
     private Skin skin;
     private Videojoc game;
     private Table objectsTable;
-    TextButton buyButton;
-    private int costFullRedPotion = 50;
+    int costFullRedPotion = 50;
     private AppPreferences preferences = new AppPreferences();
 
     public ShopScreen(Videojoc game) {
@@ -74,7 +74,7 @@ public class ShopScreen implements Screen {
             objectsTable.row(); // Move to the next row after completing a row
         }*/
 
-        Window window = new Window("", skin);
+        /*Window window = new Window("", skin);
         window.pad(10);
         objectsTable.add(window).size(520, 270).padRight(30);
 
@@ -98,7 +98,7 @@ public class ShopScreen implements Screen {
                  int quantity = Integer.parseInt(quantityLabel.getText().toString());
                 if (quantity > 1) {
                     quantityLabel.setText(String.valueOf(quantity - 1));
-                    updateCost(quantity-1);
+                    updateCost(quantity-1, costFullRedPotion, buyButton);
                 }
             }
         });
@@ -109,7 +109,7 @@ public class ShopScreen implements Screen {
                 // Aumentar la cantidad
                 int quantity = Integer.parseInt(quantityLabel.getText().toString());
                 quantityLabel.setText(String.valueOf(quantity + 1));
-                updateCost(quantity+1);
+                updateCost(quantity+1, costFullRedPotion, buyButton);
             }
         });
 
@@ -136,7 +136,13 @@ public class ShopScreen implements Screen {
                     return false;
                 }
             }
-        });
+        });*/
+        objectsTable.add(createObjectWindow("Pocion de cura lleno",Settings.COSTFULLREDPOTION,AssetManager.fullredpotiontexture)).size(520, 270).padRight(30);
+        objectsTable.add(createObjectWindow("Pocion de cura medio",Settings.COSTHALFREDPOTION,AssetManager.halfredpotiontexture)).size(520, 270).padRight(30).row();
+        objectsTable.add(createObjectWindow("Pocion de cura cuarto",Settings.COSTQUARTERREDPOTION,AssetManager.quarterredpotiontexture)).size(520, 270).padRight(30);
+        objectsTable.add(createObjectWindow("Pocion de fuerza",Settings.COSTPURPLEPOTION,AssetManager.purplepotiontexture)).size(520, 270).padRight(30).row();
+        objectsTable.add(createObjectWindow("Pocion de resistencia",Settings.COSTGREENPOTION,AssetManager.greenpotiontexture)).size(520, 270).padRight(30);
+        objectsTable.add(createObjectWindow("Pocion de velocidad",Settings.COSTYELLOWPOTION,AssetManager.yellowpotiontexture)).size(520, 270).padRight(30).row();
         stage.addActor(scrollPane);
 
     }
@@ -147,8 +153,78 @@ public class ShopScreen implements Screen {
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
     }
-    public void updateCost(int quantity) {
-        int totalCost = costFullRedPotion * quantity;
+
+
+    public Window createObjectWindow(String objectName, int costObject, Texture imageObject) {
+        Window window = new Window("", skin);
+        window.pad(10);
+
+        // Añadir el nombre del objeto
+        Label nameLabel = new Label(objectName, skin);
+        window.add(nameLabel).colspan(3).center().padBottom(10);
+
+        // Añadir imagen
+        Image image = new Image(imageObject);
+        window.add(image).pad(10).size(80,80).colspan(3).center().row();
+
+        // Añadir cantidad con botones de incremento y decremento
+        TextButton minusButton = new TextButton("-", skin);
+        TextButton plusButton = new TextButton("+", skin);
+        Label quantityLabel = new Label("1", skin);
+
+        window.add(minusButton).left();
+        window.add(quantityLabel).pad(10).center();
+        window.add(plusButton).right().padRight(30);
+
+        TextButton buyButton = new TextButton("Buy\n" +costObject+ " coins", skin);
+        buyButton.pad(10).center();
+        window.add(buyButton).colspan(3).center();
+
+        minusButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                // Disminuir la cantidad
+                int quantity = Integer.parseInt(quantityLabel.getText().toString());
+                if (quantity > 1) {
+                    quantityLabel.setText(String.valueOf(quantity - 1));
+                    updateCost(quantity-1, costObject, buyButton);
+                }
+            }
+        });
+
+        plusButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                // Aumentar la cantidad
+                int quantity = Integer.parseInt(quantityLabel.getText().toString());
+                quantityLabel.setText(String.valueOf(quantity + 1));
+                updateCost(quantity+1, costObject, buyButton);
+            }
+        });
+
+        buyButton.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                int currentCoins = preferences.getCoinsCollected();
+                int totalCost = costObject * Integer.parseInt(quantityLabel.getText().toString());
+                if (currentCoins >= totalCost) {
+                    currentCoins -= totalCost;
+                    preferences.setCoinsCollected(currentCoins);
+                    // Aquí puedes agregar cualquier otra lógica relacionada con la compra,
+                    // como agregar el objeto comprado al inventario del jugador, etc.
+                    return true;
+                } else {
+                    System.out.println("No tienes suficientes monedas para comprar este objeto.");
+                    return false;
+                }
+            }
+        });
+
+        return window;
+    }
+
+    public void updateCost(int quantity, int itemCost, TextButton buyButton) {
+        int totalCost = itemCost * quantity;
         buyButton.setText("Buy\n" + totalCost + " coins");
     }
 

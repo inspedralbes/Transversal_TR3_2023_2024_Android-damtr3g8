@@ -37,7 +37,7 @@ public class Inventory {
             // Si quedó algo de cantidad después de llenar los stacks existentes, agregamos nuevos stacks
             while (item.getQuantity() > 0) {
                 int quantityToAdd = Math.min(32, item.getQuantity());
-                Item newItem = new Item("Pocion de cura lleno", "Cura 100 de vida", AssetManager.redpotiontexture, quantityToAdd);
+                Item newItem = new Item("Pocion de cura lleno", "Cura 100 de vida", AssetManager.fullredpotiontexture, quantityToAdd);
                 items.add(newItem);
                 item.decreaseQuantity(quantityToAdd);
             }

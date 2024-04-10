@@ -47,7 +47,19 @@ public class Settings {
     public static final int SLIME_SCORE_INCREASE_LEVEL3 = 12;
 
     public static final float COIN_SPAWN = 0.2f;
-    public static final float FULLPOTION_SPAWN = 0.06f;
+    public static final float FULLPOTION_SPAWN = 0.008f;
+    public static final float HALFPOTION_SPAWN = 0.02f;
+    public static final float QUARTERPOTION_SPAWN = 0.08f;
     public static final int FULLPOTION_HEALTH = 100;
+    public static final int HALFPOTION_HEALTH = 50;
+    public static final int QUARTERPOTION_HEALTH = 25;
+
+    public static final int COSTFULLREDPOTION = 125;
+    public static final int COSTHALFREDPOTION = 65;
+    public static final int COSTQUARTERREDPOTION = 30;
+    public static final int COSTPURPLEPOTION = 500;
+    public static final int COSTGREENPOTION = 450;
+    public static final int COSTYELLOWPOTION = 325;
+
 
 }

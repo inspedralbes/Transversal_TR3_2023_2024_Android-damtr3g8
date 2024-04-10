@@ -246,7 +246,7 @@ public class Knight extends Actor {
             newHealth = maxHealth;
         }
         setHealth(newHealth);*/
-        Item potionItem = new Item("Pocion de cura lleno", "Cura 100 de vida", AssetManager.redpotiontexture, 1);
+        Item potionItem = new Item("Pocion de cura lleno", "Cura 100 de vida", AssetManager.fullredpotiontexture, 1);
         if (inventory.contains(potionItem)) {
             Item existingPotionItem = inventory.getItemByName(potionItem.getName());
             existingPotionItem.incrementQuantity(existingPotionItem.getQuantity());

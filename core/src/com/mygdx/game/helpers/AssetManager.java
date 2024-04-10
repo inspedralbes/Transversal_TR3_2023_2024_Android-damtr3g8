@@ -13,19 +13,19 @@ public class AssetManager {
     public static Texture sheetrunback;
     public static Texture slimeHopSheet,slimeAttackSheet,slimeHurtDeathSheet,slimeIdleSheet;
     public static TextureAtlas flyfirebatAtlas,attackfirebatAtlas,deathfirebatAtlas,hurtfirebatAtlas;
-    public static Texture sleepfirebat,redpotiontexture,cointexture;
+    public static Texture sleepfirebat,fullredpotiontexture,halfredpotiontexture,quarterredpotiontexture,purplepotiontexture,greenpotiontexture,yellowpotiontexture,cointexture;
     public static TextureRegion[] firebatFlyingFrames,firebatAttackingFrames,firebatDeathFrames,firebatHurtFrames;
     public static TextureRegion[] idleright,runright,attackright,hurtright,death;
     public static TextureRegion[] runfront;
     public static TextureRegion[] runback;
     public static TextureRegion[] slimeHop,slimeAttack,slimeHurt,slimeDeath,slimeIdle;
-    public static TextureRegion[] coinRegion,fullredpotion;
+    public static TextureRegion[] coinRegion,fullredpotion,halfredpotion,quarterredpotion;
     public static Animation<TextureRegion> idlerightanimation,runrightanimation,attackrightanimation,hurtrightanimation,deathanimation;
     public static Animation<TextureRegion> runfrontanimation;
     public static Animation<TextureRegion> runbackanimation;
     public static Animation<TextureRegion> firebatFlyinganimation,firebatAttackinganimation,firebatDeathanimation,firebatHurtanimation;
     public static Animation<TextureRegion> slimeHopAnimation,slimeAttackAnimation,slimeHurtAnimation,slimeDeathAnimation,slimeIdleAnimation;
-    public static Animation<TextureRegion> coinAnimation,fullredpotionAnimation;
+    public static Animation<TextureRegion> coinAnimation,fullredpotionAnimation,halfredpotionAnimation,quarterredpotionAnimation;
     public static Skin skin;
     public static void load(){
         sheets();
@@ -213,7 +213,24 @@ public class AssetManager {
         }
         fullredpotionAnimation = new Animation<>(0.08f,fullredpotion);
 
-        redpotiontexture = new Texture(Gdx.files.internal("Potions/fullredpotiontexture.png"));
+        halfredpotion = new TextureRegion[8];
+        for (int i = 0; i < halfredpotion.length; i++){
+            halfredpotion[i] = new TextureRegion(redpotionsheet,i*16,16,16,16);
+        }
+        halfredpotionAnimation = new Animation<>(0.08f,halfredpotion);
+
+        quarterredpotion = new TextureRegion[8];
+        for (int i = 0; i < quarterredpotion.length; i++){
+            quarterredpotion[i] = new TextureRegion(redpotionsheet,i*16,32,16,16);
+        }
+        quarterredpotionAnimation = new Animation<>(0.08f,quarterredpotion);
+
+        fullredpotiontexture = new Texture(Gdx.files.internal("Potions/fullredpotiontexture.png"));
+        halfredpotiontexture = new Texture(Gdx.files.internal("Potions/halfredpotiontexture.png"));
+        quarterredpotiontexture = new Texture(Gdx.files.internal("Potions/quarterredpotiontexture.png"));
+        purplepotiontexture = new Texture(Gdx.files.internal("Potions/purplepotiontexture.png"));
+        greenpotiontexture = new Texture(Gdx.files.internal("Potions/greenpotiontexture.png"));
+        yellowpotiontexture = new Texture(Gdx.files.internal("Potions/yellowpotiontexture.png"));
     }
 
 
