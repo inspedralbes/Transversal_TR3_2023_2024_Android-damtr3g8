@@ -14,6 +14,10 @@ public class Item {
         this.icon = icon;
         this.quantity = quantity;
     }
+    public Item(String name,int quantity){
+        this.name = name;
+        this.quantity = quantity;
+    }
 
     public String getName() {
         return name;

@@ -58,22 +58,19 @@ public class GameScreen implements Screen, BatDeathListener {
     private Label scoreLabel;
     private TextButton backButton;
     private int score = Settings.GAME_INITIAL_SCORE;
-    private int tempAttackIncrease = 0; // Aumento temporal de ataque debido a la poción de fuerza
-    private boolean isPotionOfStrengthActive = false;
-    int attack = Settings.KNIGHT_DAMAGE_PER_ATTACK;
     private boolean doubleLifeEnabledFireBat = false,tripleLifeEnabledFireBat = false,quintupleLifeEnabledFireBat = false;
     private boolean doubleLifeEnabledSlime = false,tripleLifeEnabledSlime = false,quintupleLifeEnabledSlime = false;
     AppPreferences preferences = new AppPreferences();
     boolean musicEnabled = preferences.isMusicEnabled();
     float musicVolume = preferences.getMusicVolume();
 
-    public GameScreen(Videojoc game) {
+    public GameScreen(Videojoc game,Inventory inventory) {
         /*if (musicEnabled) {
             AssetManager.music.setVolume(musicVolume);
             AssetManager.music.play();
         }*/
         this.game = game;
-        this.inventory = new Inventory();
+        this.inventory = inventory;
 
         shapeRenderer = new ShapeRenderer();
         camera = new OrthographicCamera(Settings.GAME_WIDTH, Settings.GAME_HEIGHT);
@@ -101,12 +98,12 @@ public class GameScreen implements Screen, BatDeathListener {
         spawnSlime();
 
         Item coinsItem = new Item("Moneda", "Objeto para comprar cosas de la tienda", AssetManager.cointexture, getMonedas());
-        Item curaLLena = new Item("Pocion de cura lleno", "Cura 100 de vida", AssetManager.fullredpotiontexture, 32);
-        Item curaMedia = new Item("Pocion de cura medio", "Cura 50 de vida", AssetManager.halfredpotiontexture, 32);
-        Item curaCuarto = new Item("Pocion de cura cuarto", "Cura 25 de vida", AssetManager.quarterredpotiontexture, 32);
-        Item fuerza = new Item("Pocion de fuerza", "Augmenta un 80% la fuerza durante 5 segundos", AssetManager.purplepotiontexture, 32);
-        Item resistencia = new Item("Pocion de resistencia", "Augmenta un 65% la resistencia durante 10 segundos", AssetManager.greenpotiontexture, 32);
-        Item velocidad = new Item("Pocion de velocidad", "Augmenta un 50% la velocidad durante 13 segundos", AssetManager.yellowpotiontexture, 64);
+        Item curaLLena = new Item("Pocion de cura lleno", "Cura 100 de vida", AssetManager.fullredpotiontexture, getFullRedPotions());
+        Item curaMedia = new Item("Pocion de cura medio", "Cura 50 de vida", AssetManager.halfredpotiontexture, getHalfRedPotions());
+        Item curaCuarto = new Item("Pocion de cura cuarto", "Cura 25 de vida", AssetManager.quarterredpotiontexture, getQuarterRedPotions());
+        Item fuerza = new Item("Pocion de fuerza", "Augmenta un 80% la fuerza durante 5 segundos", AssetManager.purplepotiontexture, getPurplePotions());
+        Item resistencia = new Item("Pocion de resistencia", "Augmenta un 65% la resistencia durante 10 segundos", AssetManager.greenpotiontexture, getGreenPotions());
+        Item velocidad = new Item("Pocion de velocidad", "Augmenta un 50% la velocidad durante 13 segundos", AssetManager.yellowpotiontexture, getYellowPotions());
         inventory.addItem(coinsItem);
         inventory.addItem(curaLLena);
         inventory.addItem(curaMedia);
@@ -381,6 +378,7 @@ public class GameScreen implements Screen, BatDeathListener {
                 newHealth = maxHealth;
             }
             knight.setHealth(newHealth);
+            preferences.decreaseFullPotionsCollected();
         } else if (item.getName().equals("Pocion de cura medio")) {
             int maxHealth = knight.getMaxHealth();
             int currentHealth = knight.getHealth();
@@ -389,6 +387,7 @@ public class GameScreen implements Screen, BatDeathListener {
                 newHealth = maxHealth;
             }
             knight.setHealth(newHealth);
+            preferences.decreaseHalfPotionsCollected();
         } else if (item.getName().equals("Pocion de cura cuarto")) {
             int maxHealth = knight.getMaxHealth();
             int currentHealth = knight.getHealth();
@@ -397,13 +396,17 @@ public class GameScreen implements Screen, BatDeathListener {
                 newHealth = maxHealth;
             }
             knight.setHealth(newHealth);
+            preferences.decreaseQuarterPotionsCollected();
         } else if (item.getName().equals("Pocion de velocidad")) {
             knight.applySpeedBoost(13f);
+            preferences.decreaseVelocityPotionsCollected();
         } else if (item.getName().equals("Pocion de resistencia")) {
             knight.applyResistance(10f);
+            preferences.decreaseEndurancePotionsCollected();
         } else if (item.getName().equals("Pocion de fuerza")){
             firebatSpawner.applyAttack(5f);
             slimeSpawner.applyAttack(5f);
+            preferences.decreaseForcePotionsCollected();
         }
     }
 
@@ -443,5 +446,26 @@ public class GameScreen implements Screen, BatDeathListener {
 
     public int getMonedas() {
         return preferences.getCoinsCollected();
+    }
+
+    public int getFullRedPotions(){
+        return preferences.getFullPotionsCollected();
+    }
+
+    public int getHalfRedPotions(){
+        return preferences.getHalfPotionsCollected();
+    }
+
+    public int getQuarterRedPotions(){
+        return preferences.getQuarterPotionsCollected();
+    }
+    public int getPurplePotions(){
+        return preferences.getForcePotionsCollected();
+    }
+    public int getGreenPotions(){
+        return preferences.getEndurancePotionsCollected();
+    }
+    public int getYellowPotions(){
+        return preferences.getVelocityPotionsCollected();
     }
 }

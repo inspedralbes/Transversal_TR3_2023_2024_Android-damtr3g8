@@ -22,6 +22,8 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.game.Videojoc;
 import com.mygdx.game.helpers.AssetManager;
+import com.mygdx.game.objects.Inventory;
+import com.mygdx.game.objects.Item;
 import com.mygdx.game.utils.AppPreferences;
 import com.mygdx.game.utils.Settings;
 
@@ -29,12 +31,21 @@ public class ShopScreen implements Screen {
     private Stage stage;
     private Skin skin;
     private Videojoc game;
+    Inventory inventory;
     private Table objectsTable;
     int costFullRedPotion = 50;
+    int fullredpotions,halfredpotions,quarterredpotions,purplepotions,greenpotions,yellowpotions;
     private AppPreferences preferences = new AppPreferences();
 
-    public ShopScreen(Videojoc game) {
+    public ShopScreen(Videojoc game, Inventory inventory) {
         this.game = game;
+        this.inventory = inventory;
+        fullredpotions = preferences.getFullPotionsCollected();
+        halfredpotions = preferences.getHalfPotionsCollected();
+        quarterredpotions = preferences.getQuarterPotionsCollected();
+        purplepotions = preferences.getForcePotionsCollected();
+        greenpotions = preferences.getEndurancePotionsCollected();
+        yellowpotions = preferences.getVelocityPotionsCollected();
     }
 
     @Override
@@ -64,12 +75,12 @@ public class ShopScreen implements Screen {
         ScrollPane scrollPane = new ScrollPane(objectsTable, skin);
         scrollPane.setFillParent(true);
         scrollPane.setScrollingDisabled(true, false);
-        objectsTable.add(createObjectWindow("Pocion de cura lleno",Settings.COSTFULLREDPOTION,AssetManager.fullredpotiontexture)).size(520, 270).padRight(30);
-        objectsTable.add(createObjectWindow("Pocion de cura medio",Settings.COSTHALFREDPOTION,AssetManager.halfredpotiontexture)).size(520, 270).padRight(30).row();
-        objectsTable.add(createObjectWindow("Pocion de cura cuarto",Settings.COSTQUARTERREDPOTION,AssetManager.quarterredpotiontexture)).size(520, 270).padRight(30);
-        objectsTable.add(createObjectWindow("Pocion de fuerza",Settings.COSTPURPLEPOTION,AssetManager.purplepotiontexture)).size(520, 270).padRight(30).row();
-        objectsTable.add(createObjectWindow("Pocion de resistencia",Settings.COSTGREENPOTION,AssetManager.greenpotiontexture)).size(520, 270).padRight(30);
-        objectsTable.add(createObjectWindow("Pocion de velocidad",Settings.COSTYELLOWPOTION,AssetManager.yellowpotiontexture)).size(520, 270).padRight(30).row();
+        objectsTable.add(createObjectWindow("Pocion de cura lleno",Settings.COSTFULLREDPOTION,AssetManager.fullredpotiontexture,fullredpotions)).size(520, 270).padRight(30);
+        objectsTable.add(createObjectWindow("Pocion de cura medio",Settings.COSTHALFREDPOTION,AssetManager.halfredpotiontexture,halfredpotions)).size(520, 270).padRight(30).row();
+        objectsTable.add(createObjectWindow("Pocion de cura cuarto",Settings.COSTQUARTERREDPOTION,AssetManager.quarterredpotiontexture,quarterredpotions)).size(520, 270).padRight(30);
+        objectsTable.add(createObjectWindow("Pocion de fuerza",Settings.COSTPURPLEPOTION,AssetManager.purplepotiontexture,purplepotions)).size(520, 270).padRight(30).row();
+        objectsTable.add(createObjectWindow("Pocion de resistencia",Settings.COSTGREENPOTION,AssetManager.greenpotiontexture,greenpotions)).size(520, 270).padRight(30);
+        objectsTable.add(createObjectWindow("Pocion de velocidad",Settings.COSTYELLOWPOTION,AssetManager.yellowpotiontexture,yellowpotions)).size(520, 270).padRight(30).row();
         stage.addActor(scrollPane);
 
     }
@@ -82,7 +93,7 @@ public class ShopScreen implements Screen {
     }
 
 
-    public Window createObjectWindow(String objectName, int costObject, Texture imageObject) {
+    public Window createObjectWindow(String objectName, int costObject, Texture imageObject,int itemCount) {
         Window window = new Window("", skin);
         window.pad(10);
 
@@ -139,6 +150,9 @@ public class ShopScreen implements Screen {
                     preferences.setCoinsCollected(currentCoins);
                     // Aquí puedes agregar cualquier otra lógica relacionada con la compra,
                     // como agregar el objeto comprado al inventario del jugador, etc.
+                    inventory.addItem(new Item(objectName,Integer.parseInt(quantityLabel.getText().toString())));
+                    int newCount = itemCount+Integer.parseInt(quantityLabel.getText().toString());
+                    preferences.setItemCount(objectName, newCount);
                     return true;
                 } else {
                     System.out.println("No tienes suficientes monedas para comprar este objeto.");

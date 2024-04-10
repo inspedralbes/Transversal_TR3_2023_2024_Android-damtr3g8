@@ -1,6 +1,7 @@
 package com.mygdx.game.objects;
 
 import com.mygdx.game.helpers.AssetManager;
+import com.mygdx.game.utils.AppPreferences;
 
 import java.util.ArrayList;
 import java.util.List;

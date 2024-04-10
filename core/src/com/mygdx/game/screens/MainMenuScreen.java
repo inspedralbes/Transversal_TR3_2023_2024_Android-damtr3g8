@@ -20,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.game.Videojoc;
 import com.mygdx.game.helpers.AssetManager;
+import com.mygdx.game.objects.Inventory;
 import com.mygdx.game.utils.AppPreferences;
 import com.mygdx.game.utils.Settings;
 
@@ -29,7 +30,7 @@ public class MainMenuScreen implements Screen {
     private Batch batch;
     Skin skin = AssetManager.skin;
     Table options, window;
-
+    private Inventory inventory;
     AppPreferences preferences = new AppPreferences();
     boolean musicEnabled = preferences.isMusicEnabled();
     float musicVolume = preferences.getMusicVolume();
@@ -45,6 +46,7 @@ public class MainMenuScreen implements Screen {
     public void show() {
         StretchViewport viewport = new StretchViewport(Settings.GAME_WIDTH, Settings.GAME_HEIGHT);
         stage = new Stage(viewport);
+        this.inventory = new Inventory();
         window = new Table();
         window.setFillParent(true);
         window.center();
@@ -62,7 +64,7 @@ public class MainMenuScreen implements Screen {
 
         startGameButton.addListener(new ChangeListener() {
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                game.setScreen(new GameScreen(game));
+                game.setScreen(new GameScreen(game,inventory));
                 loginButton.setDisabled(true);
             }
         });
@@ -144,7 +146,7 @@ public class MainMenuScreen implements Screen {
         });
         shopButton.addListener(new ChangeListener() {
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                game.setScreen(new ShopScreen(game));
+                game.setScreen(new ShopScreen(game,inventory));
                 loginButton.setDisabled(true);
             }
         });

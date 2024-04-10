@@ -26,14 +26,13 @@ public class Knight extends Actor {
     public int health = Settings.KNIGHT_HEALTH;
     Inventory inventory;
     private int monedas;
+    private int fullredpotions;
     private boolean isSpeedBoosted = false;
     private float speedBoostDuration = 0f;
     private float originalSpeed = Settings.KNIGHT_SPEED;
     private boolean isResistanceActive = false;
     private float resistanceDuration = 0f;
     private float originalDamageMultiplier = 1.0f; // Multiplicador de daño original
-
-
     private AppPreferences preferences = new AppPreferences();
 
     public Knight(float x, float y, int width, int height,Inventory inventory) {
@@ -51,6 +50,8 @@ public class Knight extends Actor {
         runFrontAnimation = AssetManager.runfrontanimation;
         runBackAnimation = AssetManager.runbackanimation;
         monedas = preferences.getCoinsCollected();
+        fullredpotions = preferences.getFullPotionsCollected();
+
     }
 
     @Override
@@ -276,6 +277,9 @@ public class Knight extends Actor {
 
     private void collectPotion(RedPotion potion) {
         System.out.println("Poción Recogida");
+        fullredpotions++;
+        preferences.setFullPotionsCollected(fullredpotions);
+        System.out.println("Monedas totales del juego: "+fullredpotions);
         Item potionItem = new Item("Pocion de cura lleno", "Cura 100 de vida", AssetManager.fullredpotiontexture, 1);
         if (inventory.contains(potionItem)) {
             Item existingPotionItem = inventory.getItemByName(potionItem.getName());
