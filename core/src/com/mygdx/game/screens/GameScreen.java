@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -24,8 +25,15 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.game.Videojoc;
+import com.mygdx.game.buttons.ButtonAttack;
+import com.mygdx.game.buttons.ButtonOpenInventary;
+import com.mygdx.game.buttons.GamepadDown;
+import com.mygdx.game.buttons.GamepadLeft;
+import com.mygdx.game.buttons.GamepadRight;
+import com.mygdx.game.buttons.GamepadUp;
 import com.mygdx.game.helpers.AssetManager;
 import com.mygdx.game.helpers.BatDeathListener;
+import com.mygdx.game.helpers.InputHandler;
 import com.mygdx.game.objects.Background;
 import com.mygdx.game.objects.Coin;
 import com.mygdx.game.objects.FireBat;
@@ -45,12 +53,19 @@ public class GameScreen implements Screen, BatDeathListener {
     private Batch batch;
     OrthographicCamera camera;
     private ShapeRenderer shapeRenderer;
+    private InputHandler inputHandler;
     private GlyphLayout textLayoutOver, textLayoutFinalScore;
     private Knight knight;
     private FireBatSpawner firebatSpawner;
     private SlimeSpawner slimeSpawner;
     private Inventory inventory;
-    private float spawnFirebatTimer,spawnSlimeTimer;
+    private ButtonAttack attackButton;
+    private ButtonOpenInventary buttonOpenInventary;
+    private GamepadDown gamepadDown;
+    private GamepadLeft gamepadLeft;
+    private GamepadRight gamepadRight;
+    private GamepadUp gamepadUp;
+    private float spawnFirebatTimer, spawnSlimeTimer;
     private Background background;
     private Skin skin = AssetManager.skin;
     BitmapFont fontTitulo = skin.getFont("title");
@@ -58,13 +73,13 @@ public class GameScreen implements Screen, BatDeathListener {
     private Label scoreLabel;
     private TextButton backButton;
     private int score = Settings.GAME_INITIAL_SCORE;
-    private boolean doubleLifeEnabledFireBat = false,tripleLifeEnabledFireBat = false,quintupleLifeEnabledFireBat = false;
-    private boolean doubleLifeEnabledSlime = false,tripleLifeEnabledSlime = false,quintupleLifeEnabledSlime = false;
+    private boolean doubleLifeEnabledFireBat = false, tripleLifeEnabledFireBat = false, quintupleLifeEnabledFireBat = false;
+    private boolean doubleLifeEnabledSlime = false, tripleLifeEnabledSlime = false, quintupleLifeEnabledSlime = false;
     AppPreferences preferences = new AppPreferences();
     boolean musicEnabled = preferences.isMusicEnabled();
     float musicVolume = preferences.getMusicVolume();
 
-    public GameScreen(Videojoc game,Inventory inventory) {
+    public GameScreen(Videojoc game, Inventory inventory) {
         /*if (musicEnabled) {
             AssetManager.music.setVolume(musicVolume);
             AssetManager.music.play();
@@ -82,18 +97,37 @@ public class GameScreen implements Screen, BatDeathListener {
         scoreLabel.setPosition(20, 900);
 
         background = new Background(AssetManager.fondo);
-        knight = new Knight(Settings.KNIGHT_STARTX, Settings.KNIGHT_STARTY, Settings.KNIGHT_WIDTH, Settings.KNIGHT_HEIGHT,inventory);
+        knight = new Knight(Settings.KNIGHT_STARTX, Settings.KNIGHT_STARTY, Settings.KNIGHT_WIDTH, Settings.KNIGHT_HEIGHT, inventory);
         knight.setName("Knight");
+
+        attackButton = new ButtonAttack(AssetManager.attackButtonnormal);
+        buttonOpenInventary = new ButtonOpenInventary(AssetManager.openButtonnormal);
+        gamepadDown = new GamepadDown(AssetManager.downButtonnormal);
+        gamepadLeft = new GamepadLeft(AssetManager.leftButtonnormal);
+        gamepadRight = new GamepadRight(AssetManager.rightButtonnormal);
+        gamepadUp = new GamepadUp(AssetManager.upButtonnormal);
+        attackButton.setBounds(Settings.BUTTON_ATTACKX, Settings.BUTTON_ATTACKY, Settings.BUTTON_ATTACK_WIDTH, Settings.BUTTON_ATTACK_HEIGHT);
+        buttonOpenInventary.setBounds(Settings.BUTTON_OPENX, Settings.BUTTON_OPENY, Settings.BUTTON_OPEN_WIDTH, Settings.BUTTON_OPEN_HEIGHT);
+        gamepadDown.setBounds(Settings.BUTTON_DOWNX,Settings.BUTTON_DOWNY,Settings.BUTTON_DOWN_WIDTH,Settings.BUTTON_DOWN_HEIGHT);
+        gamepadLeft.setBounds(Settings.BUTTON_LEFTX,Settings.BUTTON_LEFTY,Settings.BUTTON_LEFT_WIDTH,Settings.BUTTON_LEFT_HEIGHT);
+        gamepadRight.setBounds(Settings.BUTTON_RIGHTX,Settings.BUTTON_RIGHTY,Settings.BUTTON_RIGHT_WIDTH,Settings.BUTTON_RIGHT_HEIGHT);
+        gamepadUp.setBounds(Settings.BUTTON_UPX,Settings.BUTTON_UPY,Settings.BUTTON_UP_WIDTH,Settings.BUTTON_UP_HEIGHT);
 
         stage.addActor(background);
         stage.addActor(knight);
         stage.addActor(scoreLabel);
+        stage.addActor(attackButton);
+        stage.addActor(buttonOpenInventary);
+        stage.addActor(gamepadDown);
+        stage.addActor(gamepadLeft);
+        stage.addActor(gamepadRight);
+        stage.addActor(gamepadUp);
 
         firebatSpawner = new FireBatSpawner(knight, this);
         spawnFirebatTimer = 0f;
         spawnFirebat();
 
-        slimeSpawner = new SlimeSpawner(knight,this);
+        slimeSpawner = new SlimeSpawner(knight, this);
         spawnSlimeTimer = 0f;
         spawnSlime();
 
@@ -112,7 +146,9 @@ public class GameScreen implements Screen, BatDeathListener {
         inventory.addItem(resistencia);
         inventory.addItem(velocidad);
 
-        Gdx.input.setInputProcessor(stage);
+        //Gdx.input.setInputProcessor(stage);
+        inputHandler = new InputHandler(this);
+        Gdx.input.setInputProcessor(inputHandler);
 
     }
 
@@ -250,16 +286,15 @@ public class GameScreen implements Screen, BatDeathListener {
 
 
     private void handleInput(float delta) {
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+        if (inputHandler.isButtonLeftPressed) {
             knight.moverIzquierda(delta);
-        } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+        } else if (inputHandler.isButtonrightPressed) {
             knight.moverDerecha(delta);
-        } else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+        } else if (inputHandler.isButtonupPressed) {
             knight.moverArriba(delta);
-        } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+        } else if (inputHandler.isButtonDownPressed) {
             knight.moverAbajo(delta);
-        }
-        else {
+        }else {
             knight.pararMovimiento();
         }
 
@@ -268,12 +303,12 @@ public class GameScreen implements Screen, BatDeathListener {
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
-            game.setScreen(new InventoryScreen(game,inventory,this));
+            openInventary();
         }
     }
 
     @Override
-    public void onBatDeath(float x,float y) {
+    public void onBatDeath(float x, float y) {
         if (score >= 0 && score < 100) {
             score += Settings.FIREBAT_SCORE;
         } else if (score >= 100 && score < 300) {
@@ -301,11 +336,11 @@ public class GameScreen implements Screen, BatDeathListener {
         updateScoreLabel();
 
         handleCoinDrop(x, y);
-        handleRedPotionDrop(x,y);
+        handleRedPotionDrop(x, y);
     }
 
     @Override
-    public void onSlimeDeath(float x,float y) {
+    public void onSlimeDeath(float x, float y) {
         if (score >= 0 && score < 100) {
             score += Settings.SLIME_SCORE;
         } else if (score >= 100 && score < 300) {
@@ -333,7 +368,7 @@ public class GameScreen implements Screen, BatDeathListener {
         updateScoreLabel();
 
         handleCoinDrop(x, y);
-        handleRedPotionDrop(x,y);
+        handleRedPotionDrop(x, y);
     }
 
 
@@ -367,6 +402,10 @@ public class GameScreen implements Screen, BatDeathListener {
         RedPotion potion = new RedPotion();
         potion.setPosition(x, y);
         stage.addActor(potion);
+    }
+
+    public void openInventary() {
+        game.setScreen(new InventoryScreen(game, inventory, this));
     }
 
     public void useItem(Item item) {
@@ -403,7 +442,7 @@ public class GameScreen implements Screen, BatDeathListener {
         } else if (item.getName().equals("Pocion de resistencia")) {
             knight.applyResistance(10f);
             preferences.decreaseEndurancePotionsCollected();
-        } else if (item.getName().equals("Pocion de fuerza")){
+        } else if (item.getName().equals("Pocion de fuerza")) {
             firebatSpawner.applyAttack(5f);
             slimeSpawner.applyAttack(5f);
             preferences.decreaseForcePotionsCollected();
@@ -415,7 +454,8 @@ public class GameScreen implements Screen, BatDeathListener {
     }
 
     public void resumeGame() {
-        Gdx.input.setInputProcessor(stage); // Enable input processing when the game is resumed
+        //Gdx.input.setInputProcessor(stage); // Enable input processing when the game is resumed
+        Gdx.input.setInputProcessor(new InputHandler(this));
     }
 
     @Override
@@ -448,24 +488,83 @@ public class GameScreen implements Screen, BatDeathListener {
         return preferences.getCoinsCollected();
     }
 
-    public int getFullRedPotions(){
+    public int getFullRedPotions() {
         return preferences.getFullPotionsCollected();
     }
 
-    public int getHalfRedPotions(){
+    public int getHalfRedPotions() {
         return preferences.getHalfPotionsCollected();
     }
 
-    public int getQuarterRedPotions(){
+    public int getQuarterRedPotions() {
         return preferences.getQuarterPotionsCollected();
     }
-    public int getPurplePotions(){
+
+    public int getPurplePotions() {
         return preferences.getForcePotionsCollected();
     }
-    public int getGreenPotions(){
+
+    public int getGreenPotions() {
         return preferences.getEndurancePotionsCollected();
     }
-    public int getYellowPotions(){
+
+    public int getYellowPotions() {
         return preferences.getVelocityPotionsCollected();
+    }
+
+    public Knight getKnight() {
+        return knight;
+    }
+
+    public Stage getStage() {
+        return stage;
+    }
+
+    public ButtonAttack getAttackButton() {
+        return attackButton;
+    }
+
+    public Rectangle getAttackButtonBounds() {
+        return new Rectangle(attackButton.getX(), attackButton.getY(), attackButton.getWidth(), attackButton.getHeight());
+    }
+
+    public ButtonOpenInventary getButtonOpenInventary() {
+        return buttonOpenInventary;
+    }
+
+    public Rectangle getButtonOpenInventaryBounds() {
+        return new Rectangle(buttonOpenInventary.getX(), buttonOpenInventary.getY(), buttonOpenInventary.getWidth(), buttonOpenInventary.getHeight());
+    }
+
+    public GamepadDown getGamepadDown() {
+        return gamepadDown;
+    }
+
+    public Rectangle getGamepadDownBounds() {
+        return new Rectangle(gamepadDown.getX(), gamepadDown.getY(), gamepadDown.getWidth(), gamepadDown.getHeight());
+    }
+
+    public GamepadLeft getGamepadLeft() {
+        return gamepadLeft;
+    }
+
+    public Rectangle getGamepadLeftBounds() {
+        return new Rectangle(gamepadLeft.getX(), gamepadLeft.getY(), gamepadLeft.getWidth(), gamepadLeft.getHeight());
+    }
+
+    public GamepadRight getGamepadRight() {
+        return gamepadRight;
+    }
+
+    public Rectangle getGamepadRightBounds() {
+        return new Rectangle(gamepadRight.getX(), gamepadRight.getY(), gamepadRight.getWidth(), gamepadRight.getHeight());
+    }
+
+    public GamepadUp getGamepadUp() {
+        return gamepadUp;
+    }
+
+    public Rectangle getGamepadUpBounds() {
+        return new Rectangle(gamepadUp.getX(), gamepadUp.getY(), gamepadUp.getWidth(), gamepadUp.getHeight());
     }
 }

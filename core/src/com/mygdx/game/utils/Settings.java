@@ -61,5 +61,37 @@ public class Settings {
     public static final int COSTGREENPOTION = 450;
     public static final int COSTYELLOWPOTION = 325;
 
+    public static final int BUTTON_ATTACKX = 1000;
+    public static final int BUTTON_ATTACKY = 50;
+    public static final int BUTTON_ATTACK_WIDTH = 64;
+    public static final int BUTTON_ATTACK_HEIGHT = 64;
+
+    public static final int BUTTON_OPENX = 1100;
+    public static final int BUTTON_OPENY = 750;
+    public static final int BUTTON_OPEN_WIDTH = 64;
+    public static final int BUTTON_OPEN_HEIGHT = 64;
+
+
+    public static final int BUTTON_DOWNX = 200;
+    public static final int BUTTON_DOWNY = 20;
+    public static final int BUTTON_DOWN_WIDTH = 64;
+    public static final int BUTTON_DOWN_HEIGHT = 64;
+
+    public static final int BUTTON_LEFTX = 150;
+    public static final int BUTTON_LEFTY = 80;
+    public static final int BUTTON_LEFT_WIDTH = 64;
+    public static final int BUTTON_LEFT_HEIGHT = 64;
+
+    public static final int BUTTON_RIGHTX = 250;
+    public static final int BUTTON_RIGHTY = 80;
+    public static final int BUTTON_RIGHT_WIDTH = 64;
+    public static final int BUTTON_RIGHT_HEIGHT = 64;
+
+    public static final int BUTTON_UPX = 200;
+    public static final int BUTTON_UPY = 140;
+    public static final int BUTTON_UP_WIDTH = 64;
+    public static final int BUTTON_UP_HEIGHT = 64;
+
+
 
 }

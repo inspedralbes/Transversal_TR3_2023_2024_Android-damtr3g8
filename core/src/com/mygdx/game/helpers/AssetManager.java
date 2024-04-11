@@ -11,6 +11,7 @@ public class AssetManager {
     public static Texture sheetidleright,sheetrunright,sheetattackright,sheethurtright,sheetdeath;
     public static Texture sheetrunfront;
     public static Texture sheetrunback;
+    public static Texture button1sheet,button2sheet;
     public static Texture slimeHopSheet,slimeAttackSheet,slimeHurtDeathSheet,slimeIdleSheet;
     public static TextureAtlas flyfirebatAtlas,attackfirebatAtlas,deathfirebatAtlas,hurtfirebatAtlas;
     public static Texture sleepfirebat,fullredpotiontexture,halfredpotiontexture,quarterredpotiontexture,purplepotiontexture,greenpotiontexture,yellowpotiontexture,cointexture;
@@ -20,12 +21,15 @@ public class AssetManager {
     public static TextureRegion[] runback;
     public static TextureRegion[] slimeHop,slimeAttack,slimeHurt,slimeDeath,slimeIdle;
     public static TextureRegion[] coinRegion,fullredpotion,halfredpotion,quarterredpotion;
+    public static TextureRegion upButtonnormal,upButtonpressed,leftButtonnormal,leftButtonpressed,rightButtonnormal,rightButtonpressed,downButtonnormal,downButtonpressed;
+    public static TextureRegion attackButtonnormal,attackButtonpressed,openButtonnormal,openButtonpressed,closeButtonnormal,closeButtonpressed;
     public static Animation<TextureRegion> idlerightanimation,runrightanimation,attackrightanimation,hurtrightanimation,deathanimation;
     public static Animation<TextureRegion> runfrontanimation;
     public static Animation<TextureRegion> runbackanimation;
     public static Animation<TextureRegion> firebatFlyinganimation,firebatAttackinganimation,firebatDeathanimation,firebatHurtanimation;
     public static Animation<TextureRegion> slimeHopAnimation,slimeAttackAnimation,slimeHurtAnimation,slimeDeathAnimation,slimeIdleAnimation;
     public static Animation<TextureRegion> coinAnimation,fullredpotionAnimation,halfredpotionAnimation,quarterredpotionAnimation;
+
     public static Skin skin;
     public static void load(){
         sheets();
@@ -34,11 +38,9 @@ public class AssetManager {
         slime();
         coins();
         potions();
+        buttons();
         skin = new Skin(Gdx.files.internal("Skin/pixthulhu-ui.json"));
     }
-
-
-
     static void sheets(){
         fondo = new Texture(Gdx.files.internal("Fondo/fondo.png"));
         coinSheet = new Texture(Gdx.files.internal("Coins/coins.png"));
@@ -62,6 +64,9 @@ public class AssetManager {
         slimeAttackSheet = new Texture(Gdx.files.internal("Slime/Attack/attack.png"));
         slimeHurtDeathSheet = new Texture(Gdx.files.internal("Slime/DeathHurt/deathhurt.png"));
         slimeIdleSheet = new Texture(Gdx.files.internal("Slime/Idle/idle.png"));
+
+        button1sheet = new Texture(Gdx.files.internal("GamePad/buttons.png"));
+        button2sheet = new Texture(Gdx.files.internal("GamePad/buttons2.png"));
     }
     static void knight(){
         TextureRegion[][] tmpIdle = TextureRegion.split(sheetidleright, 16, 17);
@@ -205,7 +210,6 @@ public class AssetManager {
 
         cointexture = new Texture(Gdx.files.internal("Coins/monedatexture.png"));
     }
-
     static void potions(){
         fullredpotion = new TextureRegion[8];
         for (int i = 0; i < fullredpotion.length; i++){
@@ -232,6 +236,30 @@ public class AssetManager {
         greenpotiontexture = new Texture(Gdx.files.internal("Potions/greenpotiontexture.png"));
         yellowpotiontexture = new Texture(Gdx.files.internal("Potions/yellowpotiontexture.png"));
     }
+    private static void buttons() {
+        /********Sheet1*******/
+        attackButtonnormal = new TextureRegion(button2sheet,0,0,32,32);
+        attackButtonpressed = new TextureRegion(button2sheet,32,0,32,32);
+
+        openButtonnormal = new TextureRegion(button2sheet,0,32,32,32);
+        openButtonpressed = new TextureRegion(button2sheet,32,32,32,32);
+
+        closeButtonnormal = new TextureRegion(button2sheet,0,64,32,32);
+        closeButtonpressed = new TextureRegion(button2sheet,32,64,32,32);
+        /********Sheet2*******/
+        downButtonnormal = new TextureRegion(button1sheet,0,0,28,32);
+        downButtonpressed = new TextureRegion(button1sheet,28,0,28,29);
+
+        leftButtonnormal = new TextureRegion(button1sheet,0,32,29,31);
+        leftButtonpressed = new TextureRegion(button1sheet,29,32,29,28);
+
+        rightButtonnormal = new TextureRegion(button1sheet,0,63,29,31);
+        rightButtonpressed = new TextureRegion(button1sheet,29,63,29,28);
+
+        upButtonnormal = new TextureRegion(button1sheet,0,94,28,32);
+        upButtonpressed = new TextureRegion(button1sheet,28,94,28,29);
+    }
+
 
 
     public static void dispose(){
@@ -252,6 +280,8 @@ public class AssetManager {
         slimeHurtDeathSheet.dispose();
         slimeIdleSheet.dispose();
         coinSheet.dispose();
+
+        button2sheet.dispose();
         skin.dispose();
     }
 }
