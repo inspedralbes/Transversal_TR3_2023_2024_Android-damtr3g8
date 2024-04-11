@@ -1,22 +1,26 @@
 package com.mygdx.game.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.net.HttpRequestBuilder;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonWriter;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.game.Videojoc;
 import com.mygdx.game.helpers.AssetManager;
 import com.mygdx.game.utils.Settings;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class LoginScreen implements Screen {
 
@@ -64,7 +68,12 @@ public class LoginScreen implements Screen {
                 String username = usernameField.getText();
                 String password = passwordField.getText();
                 if (!username.isEmpty() && !password.isEmpty()) {
-
+                    Json json = new Json();
+                    json.setOutputType(JsonWriter.OutputType.json);
+                    LoginData loginData = new LoginData(username, password);
+                    String jsonData = json.toJson(loginData);
+                    System.out.println(jsonData);
+                    loginUser(jsonData);
                 } else {
                     // Mostrar un mensaje de error si algún campo está vacío
                     // Por ejemplo, puedes usar una ventana emergente o una etiqueta de error
@@ -83,8 +92,44 @@ public class LoginScreen implements Screen {
 
         Gdx.input.setInputProcessor(stage);
     }
+    static class LoginData {
+        private String user;
+        private String contrasenya;
 
+        public LoginData(String username, String passwd) {
+            this.user = username;
+            this.contrasenya = passwd;
+        }
+    }
+    public void loginUser(String jsonData){
+        HttpRequestBuilder requestBuilder = new HttpRequestBuilder();
+        Net.HttpRequest httpRequest = requestBuilder.newRequest()
+                .method(Net.HttpMethods.POST)
+                .url("http://192.168.206.177:3000/loginUser")
+                .header("Content-Type", "application/json") // Establece el encabezado Content-Type como aplicación/json
+                .content(jsonData) // Establece el cuerpo de la solicitud como el JSON que has creado
+                .build();
+        MyHttpResponseListener httpResponseListener = new MyHttpResponseListener();
+        Gdx.net.sendHttpRequest(httpRequest, httpResponseListener);
+    }
 
+    private class MyHttpResponseListener implements Net.HttpResponseListener{
+
+        @Override
+        public void handleHttpResponse(Net.HttpResponse httpResponse) {
+            System.out.println(httpResponse.getResultAsString());
+        }
+
+        @Override
+        public void failed(Throwable t) {
+            System.out.println("falle");
+        }
+
+        @Override
+        public void cancelled() {
+            System.out.println("cancele");
+        }
+    }
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 1);
