@@ -13,16 +13,13 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.game.Videojoc;
 import com.mygdx.game.buttons.ButtonAttack;
@@ -450,12 +447,11 @@ public class GameScreen implements Screen, BatDeathListener {
     }
 
     public void pauseGame() {
-        Gdx.input.setInputProcessor(null); // Disable input processing when the game is paused
+        Gdx.input.setInputProcessor(null);
     }
 
     public void resumeGame() {
-        //Gdx.input.setInputProcessor(stage); // Enable input processing when the game is resumed
-        Gdx.input.setInputProcessor(new InputHandler(this));
+        Gdx.input.setInputProcessor(inputHandler);
     }
 
     @Override

@@ -63,6 +63,14 @@ public class LoginScreen implements Screen {
             public void changed(ChangeEvent event, Actor actor) {
                 String username = usernameField.getText();
                 String password = passwordField.getText();
+                if (!username.isEmpty() && !password.isEmpty()) {
+
+                } else {
+                    // Mostrar un mensaje de error si algún campo está vacío
+                    // Por ejemplo, puedes usar una ventana emergente o una etiqueta de error
+                    // Aquí simplemente imprimiré un mensaje en la consola
+                    System.out.println("Por favor, complete todos los campos.");
+                }
             }
         });
 
@@ -75,6 +83,7 @@ public class LoginScreen implements Screen {
 
         Gdx.input.setInputProcessor(stage);
     }
+
 
     @Override
     public void render(float delta) {
