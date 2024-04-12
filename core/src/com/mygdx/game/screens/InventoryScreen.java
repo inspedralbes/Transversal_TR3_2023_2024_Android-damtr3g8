@@ -24,6 +24,7 @@ import com.mygdx.game.Videojoc;
 import com.mygdx.game.helpers.AssetManager;
 import com.mygdx.game.objects.Inventory;
 import com.mygdx.game.objects.Item;
+import com.mygdx.game.utils.AppPreferences;
 import com.mygdx.game.utils.Settings;
 
 public class InventoryScreen implements Screen {
@@ -33,6 +34,9 @@ public class InventoryScreen implements Screen {
     private Videojoc game;
     private GameScreen gameScreen;
     OrthographicCamera camera;
+    AppPreferences preferences = new AppPreferences();
+    boolean musicEnabled = preferences.isMusicEnabled();
+    float musicVolume = preferences.getMusicVolume();
 
     public InventoryScreen(Videojoc game, Inventory inventory,GameScreen gameScreen) {
         this.game = game;
@@ -43,6 +47,10 @@ public class InventoryScreen implements Screen {
     @Override
     public void show() {
         gameScreen.pauseGame();
+        if (musicEnabled) {
+            AssetManager.music.setVolume(musicVolume);
+            AssetManager.music.play();
+        }
         camera = new OrthographicCamera(Settings.GAME_WIDTH, Settings.GAME_HEIGHT);
         stage = new Stage(new StretchViewport(Settings.GAME_WIDTH, Settings.GAME_HEIGHT,camera));
         Gdx.input.setInputProcessor(stage);

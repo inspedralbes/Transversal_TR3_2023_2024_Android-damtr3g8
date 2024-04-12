@@ -100,7 +100,7 @@ public class MainMenuScreen implements Screen {
                 float volume = volumeMusicSlider.getValue();
                 game.getPreferences().setMusicVolume(volume);
                 // Establecer el volumen de la música
-                //AssetManager.music.setVolume(volume);
+                AssetManager.music.setVolume(volume);
                 return false;
             }
         });
@@ -114,10 +114,10 @@ public class MainMenuScreen implements Screen {
                 game.getPreferences().setMusicEnabled(enabled);
                 if (enabled) {
                     // Reproducir la música si está habilitada
-                    //AssetManager.music.play();
+                    AssetManager.music.play();
                 } else {
                     // Pausar la música si está deshabilitada
-                    //AssetManager.music.pause();
+                    AssetManager.music.pause();
                 }
                 return false;
             }

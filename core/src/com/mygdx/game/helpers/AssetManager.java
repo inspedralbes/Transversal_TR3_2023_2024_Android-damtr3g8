@@ -1,6 +1,8 @@
 package com.mygdx.game.helpers;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -29,6 +31,8 @@ public class AssetManager {
     public static Animation<TextureRegion> firebatFlyinganimation,firebatAttackinganimation,firebatDeathanimation,firebatHurtanimation;
     public static Animation<TextureRegion> slimeHopAnimation,slimeAttackAnimation,slimeHurtAnimation,slimeDeathAnimation,slimeIdleAnimation;
     public static Animation<TextureRegion> coinAnimation,fullredpotionAnimation,halfredpotionAnimation,quarterredpotionAnimation;
+    public static Music music;
+    public static Sound coinPickSound;
 
     public static Skin skin;
     public static void load(){
@@ -40,6 +44,9 @@ public class AssetManager {
         potions();
         buttons();
         skin = new Skin(Gdx.files.internal("Skin/pixthulhu-ui.json"));
+        music = Gdx.audio.newMusic(Gdx.files.internal("Music/music.mp3"));
+        music.setLooping(true);
+        //coinPickSound = Gdx.audio.newSound(Gdx.files.internal("Sounds/coinPick.wav"));
     }
     static void sheets(){
         fondo = new Texture(Gdx.files.internal("Fondo/fondo.png"));

@@ -1,6 +1,5 @@
 package com.mygdx.game.objects;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -34,8 +33,10 @@ public class Knight extends Actor {
     private float resistanceDuration = 0f;
     private float originalDamageMultiplier = 1.0f; // Multiplicador de daño original
     private AppPreferences preferences = new AppPreferences();
+    boolean soundsEnabled = preferences.isSoundEffectsEnabled();
+    float soundsVolume = preferences.getSoundVolume();
 
-    public Knight(float x, float y, int width, int height,Inventory inventory) {
+    public Knight(float x, float y, int width, int height, Inventory inventory) {
         this.width = width;
         this.height = height;
         this.inventory = inventory;
@@ -165,15 +166,6 @@ public class Knight extends Actor {
             //isAnimating = true;
             isAttacking = true;
             stateTime = 0;
-            /*if (soundsEnabled) {
-                addAction(Actions.sequence(
-                        Actions.delay(attackAnimation.getAnimationDuration() / 2),
-                        Actions.run(() -> {
-                            Long delayedSound = AssetManager.attackLeafRangerSound.play();
-                            AssetManager.attackLeafRangerSound.setVolume(delayedSound, soundsVolume);
-                        })
-                ));
-            }*/
             addAction(Actions.sequence(
                     Actions.delay(attackRightAnimation.getAnimationDuration()),
                     Actions.run(() -> {
@@ -249,9 +241,13 @@ public class Knight extends Actor {
 
     private void collectCoin(Coin coin) {
         System.out.println("Moneda Recogida");
-        monedas+=3;
+        if (soundsEnabled) {
+            Long delayedSound = AssetManager.coinPickSound.play();
+            AssetManager.coinPickSound.setVolume(delayedSound, soundsVolume);
+        }
+        monedas += 3;
         preferences.setCoinsCollected(monedas);
-        System.out.println("Monedas totales del juego: "+monedas);
+        System.out.println("Monedas totales del juego: " + monedas);
         Item coinItem = new Item("Moneda", "Objeto para comprar cosas de la tienda", AssetManager.cointexture, 3);
         if (inventory.contains(coinItem)) {
             Item existingCoinItem = inventory.getItemByName(coinItem.getName());
@@ -279,7 +275,7 @@ public class Knight extends Actor {
         System.out.println("Poción Recogida");
         fullredpotions++;
         preferences.setFullPotionsCollected(fullredpotions);
-        System.out.println("Monedas totales del juego: "+fullredpotions);
+        System.out.println("Monedas totales del juego: " + fullredpotions);
         Item potionItem = new Item("Pocion de cura lleno", "Cura 100 de vida", AssetManager.fullredpotiontexture, 1);
         if (inventory.contains(potionItem)) {
             Item existingPotionItem = inventory.getItemByName(potionItem.getName());
@@ -313,6 +309,7 @@ public class Knight extends Actor {
     public int getHealth() {
         return health;
     }
+
     public void setHealth(int newHealth) {
         if (newHealth > 0) {
             health = newHealth;

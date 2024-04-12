@@ -77,10 +77,10 @@ public class GameScreen implements Screen, BatDeathListener {
     float musicVolume = preferences.getMusicVolume();
 
     public GameScreen(Videojoc game, Inventory inventory) {
-        /*if (musicEnabled) {
+        if (musicEnabled) {
             AssetManager.music.setVolume(musicVolume);
             AssetManager.music.play();
-        }*/
+        }
         this.game = game;
         this.inventory = inventory;
 
